@@ -8,6 +8,10 @@
 
 - Support IntelliJ 2024.1, EAP
 
+### Changed
+
+- Upgraded gradle-intellij-plugin to v2
+
 ## [0.1.5] - 2023-12-11
 
 ### Fixed

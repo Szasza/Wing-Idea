@@ -1,8 +1,8 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin require-restart="false">
-    <id>com.github.olivernybroe.wingidea</id>
+    <id>com.github.wingidea</id>
     <name>Wing</name>
-    <vendor>Oliver Nybroe</vendor>
+    <vendor>Szasza Palmer</vendor>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.ultimate</depends>
@@ -11,50 +11,50 @@
     <resource-bundle>messages.WingBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.olivernybroe.wingidea.ide.toolWindow.WingConsoleMapToolWindowFactory" id="Wing Console Map"/>
-        <toolWindow factoryClass="com.github.olivernybroe.wingidea.ide.toolWindow.WingConsoleExplorerToolWindowFactory" id="Wing Console Explorer"/>
+        <toolWindow factoryClass="com.github.wingidea.ide.toolWindow.WingConsoleMapToolWindowFactory" id="Wing Console Map"/>
+        <toolWindow factoryClass="com.github.wingidea.ide.toolWindow.WingConsoleExplorerToolWindowFactory" id="Wing Console Explorer"/>
         <!--suppress PluginXmlValidity -->
         <platform.lsp.serverSupportProvider
-                implementation="com.github.olivernybroe.wingidea.ide.lsp.WingLspServerSupportProvider"/>
+                implementation="com.github.wingidea.ide.lsp.WingLspServerSupportProvider"/>
         <fileType name="Wing"
-                  implementationClass="com.github.olivernybroe.wingidea.lang.WingFileType"
+                  implementationClass="com.github.wingidea.lang.WingFileType"
                   fieldName="INSTANCE"
                   language="Wing"
                   extensions="w"/>
         <lang.parserDefinition
                 language="Wing"
-                implementationClass="com.github.olivernybroe.wingidea.lang.parser.WingParserDefinition"
+                implementationClass="com.github.wingidea.lang.parser.WingParserDefinition"
         />
         <lang.syntaxHighlighterFactory language="Wing"
-                                       implementationClass="com.github.olivernybroe.wingidea.ide.highlighting.WingSyntaxHighlighterFactory"/>
-        <colorSettingsPage implementation="com.github.olivernybroe.wingidea.ide.highlighting.WingColorSettingsPage"/>
+                                       implementationClass="com.github.wingidea.ide.highlighting.WingSyntaxHighlighterFactory"/>
+        <colorSettingsPage implementation="com.github.wingidea.ide.highlighting.WingColorSettingsPage"/>
         <annotator
                 language="Wing"
-                implementationClass="com.github.olivernybroe.wingidea.ide.highlighting.WingHighlightAnnotator"/>
+                implementationClass="com.github.wingidea.ide.highlighting.WingHighlightAnnotator"/>
         <lang.formatter
                 language="Wing"
-                implementationClass="com.github.olivernybroe.wingidea.ide.formatter.WingFormattingModelBuilder"/>
+                implementationClass="com.github.wingidea.ide.formatter.WingFormattingModelBuilder"/>
         <langCodeStyleSettingsProvider
-                implementation="com.github.olivernybroe.wingidea.ide.formatter.settings.WingLanguageCodeStyleSettingsProvider"/>
+                implementation="com.github.wingidea.ide.formatter.settings.WingLanguageCodeStyleSettingsProvider"/>
         <lang.braceMatcher language="Wing"
-                           implementationClass="com.github.olivernybroe.wingidea.ide.editor.WingBraceMatcher"/>
+                           implementationClass="com.github.wingidea.ide.editor.WingBraceMatcher"/>
         <lang.commenter language="Wing"
-                        implementationClass="com.github.olivernybroe.wingidea.ide.editor.WingCommenter"/>
+                        implementationClass="com.github.wingidea.ide.editor.WingCommenter"/>
         <lang.quoteHandler language="Wing"
-                           implementationClass="com.github.olivernybroe.wingidea.ide.editor.WingQuoteHandler"/>
+                           implementationClass="com.github.wingidea.ide.editor.WingQuoteHandler"/>
         <lang.foldingBuilder language="Wing"
-                             implementationClass="com.github.olivernybroe.wingidea.ide.folding.WingBlockFoldingBuilder"/>
+                             implementationClass="com.github.wingidea.ide.folding.WingBlockFoldingBuilder"/>
         <lang.foldingBuilder language="Wing"
-                             implementationClass="com.github.olivernybroe.wingidea.ide.folding.WingImportFoldingBuilder"/>
+                             implementationClass="com.github.wingidea.ide.folding.WingImportFoldingBuilder"/>
     </extensions>
 
     <projectListeners>
         <listener topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"
-                  class="com.github.olivernybroe.wingidea.ide.WingFileChangedListener"/>
+                  class="com.github.wingidea.ide.WingFileChangedListener"/>
     </projectListeners>
 
     <actions>
-        <action id="Wing.AddWingConnection" class="com.github.olivernybroe.wingidea.ide.servicesWindow.AddWingConnectionAction" text="Wing Connection">
+        <action id="Wing.AddWingConnection" class="com.github.wingidea.ide.servicesWindow.AddWingConnectionAction" text="Wing Connection">
             <add-to-group group-id="ServiceView.AddService"/>
         </action>
     </actions>
