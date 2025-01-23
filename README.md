@@ -1,6 +1,6 @@
 # Wing-Idea
 
-![Build](https://github.com/olivernybroe/Wing-Idea/workflows/Build/badge.svg)
+![Build](https://github.com/Szasza/Wing-Idea/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/22353.svg)](https://plugins.jetbrains.com/plugin/22353)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/22353.svg)](https://plugins.jetbrains.com/plugin/22353)
 
@@ -32,7 +32,7 @@ The following features are supported:
   
 - Manually:
 
-  Download the [latest release](https://github.com/olivernybroe/Wing-Idea/releases/latest) and install it manually using
+  Download the [latest release](https://github.com/Szasza/Wing-Idea/releases/latest) and install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
 

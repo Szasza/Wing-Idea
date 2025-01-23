@@ -1,4 +1,4 @@
-package com.github.olivernybroe.wingidea.lang.lexer
+package com.github.wingidea.lang.lexer
 
 import com.intellij.lexer.Lexer
 import com.intellij.testFramework.LexerTestCase

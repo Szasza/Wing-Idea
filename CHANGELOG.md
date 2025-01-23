@@ -63,8 +63,8 @@
 
 - Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 
-[Unreleased]: https://github.com/olivernybroe/Wing-Idea/compare/v0.1.5...HEAD
-[0.1.5]: https://github.com/olivernybroe/Wing-Idea/compare/v0.1.0...v0.1.5
-[0.1.0]: https://github.com/olivernybroe/Wing-Idea/compare/v0.0.2...v0.1.0
-[0.0.2]: https://github.com/olivernybroe/Wing-Idea/compare/v0.0.1...v0.0.2
-[0.0.1]: https://github.com/olivernybroe/Wing-Idea/commits/v0.0.1
+[Unreleased]: https://github.com/Szasza/Wing-Idea/compare/v0.1.5...HEAD
+[0.1.5]: https://github.com/Szasza/Wing-Idea/compare/v0.1.0...v0.1.5
+[0.1.0]: https://github.com/Szasza/Wing-Idea/compare/v0.0.2...v0.1.0
+[0.0.2]: https://github.com/Szasza/Wing-Idea/compare/v0.0.1...v0.0.2
+[0.0.1]: https://github.com/Szasza/Wing-Idea/commits/v0.0.1
