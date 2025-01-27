@@ -71,7 +71,7 @@ class WingServerType(val project: Project) : ServerType<WingConfiguration>("wing
     }
 }
 
-class WingDeploymentConfigurator(): DeploymentConfigurator<WingDeploymentConfiguration, WingConfiguration>() {
+class WingDeploymentConfigurator: DeploymentConfigurator<WingDeploymentConfiguration, WingConfiguration>() {
     override fun getAvailableDeploymentSources(): MutableList<DeploymentSource> {
         return mutableListOf()
     }
@@ -102,6 +102,4 @@ class WingDeploymentConfigurator(): DeploymentConfigurator<WingDeploymentConfigu
 class WingDeploymentConfiguration: DeploymentConfigurationBase<WingDeploymentConfiguration>()
 
 
-class WingConfiguration(val project: Project) : ServerConfigurationBase<WingConfiguration>() {
-
-}
+class WingConfiguration(val project: Project) : ServerConfigurationBase<WingConfiguration>()

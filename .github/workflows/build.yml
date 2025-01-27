@@ -29,7 +29,7 @@ jobs:
   # Prepare environment and build the plugin
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.properties.outputs.version }}
       changelog: ${{ steps.properties.outputs.changelog }}
@@ -43,13 +43,6 @@ jobs:
       # Validate wrapper
       - name: Gradle Wrapper Validation
         uses: gradle/actions/wrapper-validation@v3
-
-      # Set up Java environment for the next steps
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: zulu
-          java-version: 17
 
       # Setup Gradle
       - name: Setup Gradle
@@ -99,19 +92,12 @@ jobs:
   test:
     name: Test
     needs: [ build ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
 
       # Check out the current repository
       - name: Fetch Sources
         uses: actions/checkout@v4
-
-      # Set up Java environment for the next steps
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: zulu
-          java-version: 17
 
       # Setup Gradle
       - name: Setup Gradle
@@ -139,7 +125,7 @@ jobs:
   inspectCode:
     name: Inspect code
     needs: [ build ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
       checks: write
@@ -160,13 +146,6 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}  # to check out the actual pull request commit, not the merge commit
           fetch-depth: 0  # a full history is required for pull request analysis
 
-      # Set up Java environment for the next steps
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: zulu
-          java-version: 17
-
       # Run Qodana inspections
       - name: Qodana - Code Inspection
         uses: JetBrains/qodana-action@v2024.3
@@ -181,7 +160,7 @@ jobs:
   verify:
     name: Verify plugin
     needs: [ build ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
 
       # Free GitHub Actions Environment Disk Space
@@ -194,13 +173,6 @@ jobs:
       # Check out the current repository
       - name: Fetch Sources
         uses: actions/checkout@v4
-
-      # Set up Java environment for the next steps
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: zulu
-          java-version: 17
 
       # Setup Gradle
       - name: Setup Gradle
@@ -231,7 +203,7 @@ jobs:
     name: Release draft
     if: github.event_name != 'pull_request'
     needs: [ build, test, inspectCode, verify ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:

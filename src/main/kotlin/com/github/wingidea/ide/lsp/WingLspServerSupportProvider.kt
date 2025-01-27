@@ -4,7 +4,6 @@ import com.github.wingidea.WingIcons
 import com.github.wingidea.ide.WingCommandLine
 import com.github.wingidea.isWingFile
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.editor.EditorModificationUtil
