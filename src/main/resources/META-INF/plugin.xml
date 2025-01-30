@@ -1,6 +1,6 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin require-restart="false">
-    <id>com.github.wingidea</id>
+    <id>com.github.olivernybroe.wingidea</id>
     <name>Wing</name>
     <vendor>Szasza Palmer</vendor>
 
