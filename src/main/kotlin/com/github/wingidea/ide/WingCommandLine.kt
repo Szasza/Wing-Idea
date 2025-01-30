@@ -17,26 +17,29 @@ import com.intellij.openapi.project.Project
 class WingCommandLine {
 
     companion object {
-        fun createCommand(project: Project, vararg commands: String): GeneralCommandLine {
+        private fun createCommand(project: Project, vararg commands: String): GeneralCommandLine {
             val interpreter = NodeJsInterpreterManager.getInstance(project).interpreter
             if (interpreter !is NodeJsLocalInterpreter && interpreter !is WslNodeInterpreter) {
                 // shouldn't happen, checked in PrismaLspServerSupportProvider
-                throw ExecutionException("Not configured")
+                throw ExecutionException("NodeJS/WSL interpreter is not configured for the project, the LSP server cannot be started.")
             }
 
             val npmPath = NpmManager.getInstance(project).getPackage(interpreter)!!.systemDependentPath
+            val nodeBinPath = npmPath.replaceAfterLast("/", "").replaceAfterLast("\\", "").trimEnd('/','\\')
+            val cmdLine = GeneralCommandLine("wing")
+            val envPath = cmdLine.parentEnvironment["PATH"]
 
-            return GeneralCommandLine().apply {
+            return cmdLine.apply {
                 withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+                withEnvironment(parentEnvironment)
+                withEnvironment("PATH", "$envPath:$nodeBinPath")
                 withCharset(Charsets.UTF_8)
                 withWorkDirectory(project.basePath)
-                withExePath(npmPath.replaceAfterLast("/", "npx").replaceAfterLast("\\", "npx.cmd"))
-                addParameter("wing")
                 addParameters(*commands)
             }
         }
 
-        fun createLsp(project: Project): GeneralCommandLine = createCommand(project, "lsp")
+        fun createLsp(project: Project): GeneralCommandLine = createCommand(project, "lsp", "--no-update-check")
         fun createConsole(project: Project): GeneralCommandLine = createCommand(project, "it", "--no-open")
     }
 }

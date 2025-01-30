@@ -43,7 +43,7 @@ class WingConsoleManager(val project: Project): Disposable {
     var path: String? = null
     var port: Int? = 3000
     var host: String? = "localhost"
-    var processHandler: OSProcessHandler? = null
+    private var processHandler: OSProcessHandler? = null
     private val json = Json {
         prettyPrint = true
         isLenient = true
@@ -159,7 +159,7 @@ class WingConsoleManager(val project: Project): Disposable {
     @Serializable
     data class SubscriptionQueryResult<T>(
         val type: SubscriptionQueryResultType,
-        @Contextual()
+        @Contextual
         val data: T? = null
         // ▼ {"id":200,"result":{"type":"data","data":{"data":{"message":"List (prefix=null).","status":"success","result":"[]"},"type":"resource","sourcePath":"root/Default/cloud.Bucket","sourceType":"wingsdk.cloud.Bucket","timestamp":"2023-08-04T12:21:48.773Z"}}}
     )
