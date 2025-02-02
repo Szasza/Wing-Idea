@@ -173,8 +173,12 @@ class WingConsoleManager(val project: Project): Disposable {
     @Serializable
     enum class InvalidateQueryResultData {
         @SerialName("app.error") ERROR,
-        @SerialName("app.state") STATE,
+        @SerialName("app.explorerTree") EXPLORER_TREE,
         @SerialName("app.logs") LOGS,
+        @SerialName("app.map") MAP,
+        @SerialName("app.nodeMetadata") NODE_METADATA,
+        @SerialName("app.state") STATE,
+        @SerialName("test.list") TEST_LIST,
     }
 
     @Serializable

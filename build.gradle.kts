@@ -6,6 +6,8 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
 val ktorVersion: String by project
+val wingPluginVersion = properties("pluginVersion").get()
+val wingPluginSinceBuild = properties("pluginSinceBuild").get()
 
 plugins {
     id("java") // Java support
@@ -18,7 +20,7 @@ plugins {
 }
 
 group = properties("pluginGroup").get()
-version = properties("pluginVersion").get()
+version = "$wingPluginVersion.$wingPluginSinceBuild"
 
 // Set the JVM language level used to build the project.
 kotlin {
@@ -37,6 +39,7 @@ repositories {
 
 configurations.all {
     exclude("org.slf4j", "slf4j-api")
+    exclude("org.jetbrains.kotlinx:kotlinx-coroutines")
 }
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
@@ -119,6 +122,20 @@ intellijPlatform {
         }
     }
 
+    signing {
+        certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN")
+        privateKey = providers.environmentVariable("PRIVATE_KEY")
+        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD")
+    }
+
+    publishing {
+        token = providers.environmentVariable("PUBLISH_TOKEN")
+        // The pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
+        // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
+        // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
+        channels = providers.gradleProperty("pluginVersion").map { listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" }) }
+    }
+
     pluginVerification {
         ides {
             ide(IntelliJPlatformType.IntellijIdeaUltimate, "2024.1")
@@ -152,19 +169,8 @@ tasks {
         gradleVersion = properties("gradleVersion").get()
     }
 
-    signPlugin {
-        certificateChain = environment("CERTIFICATE_CHAIN")
-        privateKey = environment("PRIVATE_KEY")
-        password = environment("PRIVATE_KEY_PASSWORD")
-    }
-
     publishPlugin {
         dependsOn("patchChangelog")
-        token = environment("PUBLISH_TOKEN")
-        // The pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
-        // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
-        // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-        channels = properties("pluginVersion").map { listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" }) }
     }
 }
 
