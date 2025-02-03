@@ -7,6 +7,15 @@
 ### Changed
 
 - Upgraded gradle-intellij-plugin to v2
+- Upgraded annotations to v26.0.2
+- Upgraded qodana to v2024.3.4
+- Upgraded Gradle to v8.12
+- Added jUnit as a dependency
+
+### Fixed
+
+- Wing language server startup command generation
+- Wing language server response parsing
 
 ## [0.1.6] - 2024-04-09
 
