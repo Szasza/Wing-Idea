@@ -1,27 +1,27 @@
 {
   //noinspection BnfResolve
-  parserClass='com.github.olivernybroe.wingidea.lang.parser.WingParser'
+  parserClass='com.github.wingidea.lang.parser.WingParser'
   //noinspection BnfResolve
-  parserUtilClass='com.github.olivernybroe.wingidea.lang.parser.WingParserUtil'
+  parserUtilClass='com.github.wingidea.lang.parser.WingParserUtil'
 
   //noinspection BnfResolve
-  implements='com.github.olivernybroe.wingidea.lang.psi.WingElement'
+  implements='com.github.wingidea.lang.psi.WingElement'
   //noinspection BnfResolve
-  extends='com.github.olivernybroe.wingidea.lang.psi.impl.WingElementImpl'
+  extends='com.github.wingidea.lang.psi.impl.WingElementImpl'
 
   //noinspection BnfResolve
-  elementTypeHolderClass='com.github.olivernybroe.wingidea.lang.psi.WingElementTypes'
+  elementTypeHolderClass='com.github.wingidea.lang.psi.WingElementTypes'
   //noinspection BnfResolve
-  elementTypeClass='com.github.olivernybroe.wingidea.lang.psi.WingElementType'
+  elementTypeClass='com.github.wingidea.lang.psi.WingElementType'
   //noinspection BnfResolve
-  tokenTypeClass='com.github.olivernybroe.wingidea.lang.psi.WingTokenType'
+  tokenTypeClass='com.github.wingidea.lang.psi.WingTokenType'
 
   psiClassPrefix='Wing'
   psiImplClassSuffix='Impl'
   //noinspection BnfResolve
-  psiPackage='com.github.olivernybroe.wingidea.lang.psi'
+  psiPackage='com.github.wingidea.lang.psi'
   //noinspection BnfResolve
-  psiImplPackage='com.github.olivernybroe.wingidea.lang.psi.impl'
+  psiImplPackage='com.github.wingidea.lang.psi.impl'
 
   tokens = [
     INFLIGHT_SPECIFIER = 'inflight'
