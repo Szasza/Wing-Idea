@@ -20,7 +20,9 @@ plugins {
 }
 
 group = properties("pluginGroup").get()
-version = "$wingPluginVersion.$wingPluginSinceBuild"
+version = wingPluginVersion
+// Preparation for the Kotlin un-bundling
+//version = "$wingPluginVersion.$wingPluginSinceBuild"
 
 // Set the JVM language level used to build the project.
 kotlin {
