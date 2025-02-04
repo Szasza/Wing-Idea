@@ -6,9 +6,6 @@
 
 This plugin adds supports for Wing language in IntelliJ IDE's. It is not affiliated with either Wing or JetBrains.
 
-## Template ToDo list
-- [ ] Set the [Plugin Signing](https://plugins.jetbrains.com/docs/intellij/plugin-signing.html?from=IJPluginTemplate) related [secrets](https://github.com/JetBrains/intellij-platform-plugin-template#environment-variables).
-
 <!-- Plugin description -->
 Adds support for the Wing language.  
   
@@ -22,6 +19,13 @@ The following features are supported:
 - Wing Console browser window
 
 <!-- Plugin description end -->
+
+## Prerequisites
+
+1. [Install NodeJS](https://nodejs.org/en/download)
+2. [Install Wing](https://www.winglang.io/install)
+3. [Install IntelliJ IDEA Ultimate](https://www.jetbrains.com/idea/download/)
+4. [Configure the Node.js interpreter in IDEA](https://www.jetbrains.com/help/idea/developing-node-js-applications.html#ws_node_configure_local_node_interpreter)
 
 ## Installation
 
