@@ -1039,6 +1039,7 @@ public class WingParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // BRING IDENTIFIER SEMICOLON
   //     | BRING IDENTIFIER ALIAS IDENTIFIER SEMICOLON
+  //     | BRING STRING_LITERAL ALIAS IDENTIFIER SEMICOLON
   public static boolean ImportStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ImportStatement")) return false;
     if (!nextTokenIs(b, BRING)) return false;
@@ -1046,6 +1047,7 @@ public class WingParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = parseTokens(b, 0, BRING, IDENTIFIER, SEMICOLON);
     if (!r) r = parseTokens(b, 0, BRING, IDENTIFIER, ALIAS, IDENTIFIER, SEMICOLON);
+    if (!r) r = parseTokens(b, 0, BRING, STRING_LITERAL, ALIAS, IDENTIFIER, SEMICOLON);
     exit_section_(b, m, IMPORT_STATEMENT, r);
     return r;
   }
