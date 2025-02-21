@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface WingInflightMethodSignature extends WingElement {
 
-  @NotNull
+  @Nullable
   WingParameterList getParameterList();
 
-  @NotNull
+  @Nullable
   WingTypeAnnotation getTypeAnnotation();
 
   @NotNull

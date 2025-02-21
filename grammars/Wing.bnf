@@ -305,7 +305,7 @@ WhileStatement ::=
     WHILE Expression BlockStatement
 
 ClassDefinitionStatement ::=
-    INFLIGHT_SPECIFIER CLASS IDENTIFIER (EXTENDS CustomType)? (IMPLEMENTS CustomType (COMMA CustomType)*)? ClassImplementation {pin=1}
+    INFLIGHT_SPECIFIER? CLASS IDENTIFIER (EXTENDS CustomType)? (IMPLEMENTS CustomType (COMMA CustomType)*)? ClassImplementation {pin=2}
 
 ClassImplementation ::=
     LEFT_CURLY_BRACE (Initializer | ClassField | MethodDefinition | InflightMethodDefinition )* RIGHT_CURLY_BRACE {pin=1}
@@ -323,7 +323,7 @@ MethodDefinition ::=
     ExternModifier? AccessModifier? static? 'async'? IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON) {pin=5}
 
 InflightMethodDefinition ::=
-    ExternModifier? AccessModifier? static? INFLIGHT_SPECIFIER IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON) {pin=4}
+    ExternModifier? AccessModifier? static? INFLIGHT_SPECIFIER IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON) {pin=5}
 
 ExternModifier ::=
     EXTERN String
@@ -368,7 +368,7 @@ ReturnStatement ::=
     RETURN Expression SEMICOLON
 
 InterfaceDefinitionStatement ::=
-    INTERFACE IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? InterfaceImplementation {pin=1}
+    INFLIGHT_SPECIFIER? INTERFACE IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? InterfaceImplementation {pin=2}
 
 InterfaceImplementation ::=
     LEFT_CURLY_BRACE (MethodSignature | InflightMethodSignature | ClassField )* RIGHT_CURLY_BRACE {pin=1}
@@ -377,7 +377,7 @@ MethodSignature ::=
     ASYNC? IDENTIFIER ParameterList TypeAnnotation SEMICOLON
 
 InflightMethodSignature ::=
-    INFLIGHT_SPECIFIER IDENTIFIER ParameterList TypeAnnotation SEMICOLON
+    INFLIGHT_SPECIFIER IDENTIFIER ParameterList TypeAnnotation SEMICOLON {pin=2}
 
 StructDefinitionStatement ::=
     STRUCT IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? StructImplementation {pin=1}

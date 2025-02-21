@@ -315,19 +315,27 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // INFLIGHT_SPECIFIER CLASS IDENTIFIER (EXTENDS CustomType)? (IMPLEMENTS CustomType (COMMA CustomType)*)? ClassImplementation
+  // INFLIGHT_SPECIFIER? CLASS IDENTIFIER (EXTENDS CustomType)? (IMPLEMENTS CustomType (COMMA CustomType)*)? ClassImplementation
   public static boolean ClassDefinitionStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ClassDefinitionStatement")) return false;
-    if (!nextTokenIs(b, INFLIGHT_SPECIFIER)) return false;
+    if (!nextTokenIs(b, "<class definition statement>", CLASS, INFLIGHT_SPECIFIER)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CLASS_DEFINITION_STATEMENT, null);
-    r = consumeTokens(b, 1, INFLIGHT_SPECIFIER, CLASS, IDENTIFIER);
-    p = r; // pin = 1
+    Marker m = enter_section_(b, l, _NONE_, CLASS_DEFINITION_STATEMENT, "<class definition statement>");
+    r = ClassDefinitionStatement_0(b, l + 1);
+    r = r && consumeTokens(b, 1, CLASS, IDENTIFIER);
+    p = r; // pin = 2
     r = r && report_error_(b, ClassDefinitionStatement_3(b, l + 1));
     r = p && report_error_(b, ClassDefinitionStatement_4(b, l + 1)) && r;
     r = p && ClassImplementation(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
+  }
+
+  // INFLIGHT_SPECIFIER?
+  private static boolean ClassDefinitionStatement_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ClassDefinitionStatement_0")) return false;
+    consumeToken(b, INFLIGHT_SPECIFIER);
+    return true;
   }
 
   // (EXTENDS CustomType)?
@@ -1085,8 +1093,8 @@ public class WingParser implements PsiParser, LightPsiParser {
     r = InflightMethodDefinition_0(b, l + 1);
     r = r && InflightMethodDefinition_1(b, l + 1);
     r = r && InflightMethodDefinition_2(b, l + 1);
-    r = r && consumeTokens(b, 1, INFLIGHT_SPECIFIER, IDENTIFIER);
-    p = r; // pin = 4
+    r = r && consumeTokens(b, 2, INFLIGHT_SPECIFIER, IDENTIFIER);
+    p = r; // pin = 5
     r = r && report_error_(b, ParameterList(b, l + 1));
     r = p && report_error_(b, InflightMethodDefinition_6(b, l + 1)) && r;
     r = p && InflightMethodDefinition_7(b, l + 1) && r;
@@ -1136,14 +1144,15 @@ public class WingParser implements PsiParser, LightPsiParser {
   public static boolean InflightMethodSignature(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "InflightMethodSignature")) return false;
     if (!nextTokenIs(b, INFLIGHT_SPECIFIER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, INFLIGHT_SPECIFIER, IDENTIFIER);
-    r = r && ParameterList(b, l + 1);
-    r = r && TypeAnnotation(b, l + 1);
-    r = r && consumeToken(b, SEMICOLON);
-    exit_section_(b, m, INFLIGHT_METHOD_SIGNATURE, r);
-    return r;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, INFLIGHT_METHOD_SIGNATURE, null);
+    r = consumeTokens(b, 2, INFLIGHT_SPECIFIER, IDENTIFIER);
+    p = r; // pin = 2
+    r = r && report_error_(b, ParameterList(b, l + 1));
+    r = p && report_error_(b, TypeAnnotation(b, l + 1)) && r;
+    r = p && consumeToken(b, SEMICOLON) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -1169,53 +1178,61 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // INTERFACE IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? InterfaceImplementation
+  // INFLIGHT_SPECIFIER? INTERFACE IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? InterfaceImplementation
   public static boolean InterfaceDefinitionStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "InterfaceDefinitionStatement")) return false;
-    if (!nextTokenIs(b, INTERFACE)) return false;
+    if (!nextTokenIs(b, "<interface definition statement>", INFLIGHT_SPECIFIER, INTERFACE)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, INTERFACE_DEFINITION_STATEMENT, null);
-    r = consumeTokens(b, 1, INTERFACE, IDENTIFIER);
-    p = r; // pin = 1
-    r = r && report_error_(b, InterfaceDefinitionStatement_2(b, l + 1));
+    Marker m = enter_section_(b, l, _NONE_, INTERFACE_DEFINITION_STATEMENT, "<interface definition statement>");
+    r = InterfaceDefinitionStatement_0(b, l + 1);
+    r = r && consumeTokens(b, 1, INTERFACE, IDENTIFIER);
+    p = r; // pin = 2
+    r = r && report_error_(b, InterfaceDefinitionStatement_3(b, l + 1));
     r = p && InterfaceImplementation(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
+  // INFLIGHT_SPECIFIER?
+  private static boolean InterfaceDefinitionStatement_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_0")) return false;
+    consumeToken(b, INFLIGHT_SPECIFIER);
+    return true;
+  }
+
   // (EXTENDS CustomType (COMMA CustomType)*)?
-  private static boolean InterfaceDefinitionStatement_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_2")) return false;
-    InterfaceDefinitionStatement_2_0(b, l + 1);
+  private static boolean InterfaceDefinitionStatement_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_3")) return false;
+    InterfaceDefinitionStatement_3_0(b, l + 1);
     return true;
   }
 
   // EXTENDS CustomType (COMMA CustomType)*
-  private static boolean InterfaceDefinitionStatement_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_2_0")) return false;
+  private static boolean InterfaceDefinitionStatement_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, EXTENDS);
     r = r && CustomType(b, l + 1);
-    r = r && InterfaceDefinitionStatement_2_0_2(b, l + 1);
+    r = r && InterfaceDefinitionStatement_3_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // (COMMA CustomType)*
-  private static boolean InterfaceDefinitionStatement_2_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_2_0_2")) return false;
+  private static boolean InterfaceDefinitionStatement_3_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_3_0_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!InterfaceDefinitionStatement_2_0_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "InterfaceDefinitionStatement_2_0_2", c)) break;
+      if (!InterfaceDefinitionStatement_3_0_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "InterfaceDefinitionStatement_3_0_2", c)) break;
     }
     return true;
   }
 
   // COMMA CustomType
-  private static boolean InterfaceDefinitionStatement_2_0_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_2_0_2_0")) return false;
+  private static boolean InterfaceDefinitionStatement_3_0_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_3_0_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
