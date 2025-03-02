@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface WingResourceDefinitionStatement extends WingElement {
+public interface WingThrowStatement extends WingElement {
 
-  @Nullable
-  WingResourceImplementation getResourceImplementation();
+  @NotNull
+  WingExpression getExpression();
 
 }

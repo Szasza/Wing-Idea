@@ -47,13 +47,14 @@ public class WingParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // PUBLIC
   //     | PROTECTED
+  //     | INTERNAL
   public static boolean AccessModifier(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "AccessModifier")) return false;
-    if (!nextTokenIs(b, "<access modifier>", PROTECTED, PUBLIC)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ACCESS_MODIFIER, "<access modifier>");
     r = consumeToken(b, PUBLIC);
     if (!r) r = consumeToken(b, PROTECTED);
+    if (!r) r = consumeToken(b, INTERNAL);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -73,12 +74,14 @@ public class WingParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // IDENTIFIER COLON Expression
+  //     | ReferenceExpression
   //     | Expression
   public static boolean Argument(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Argument")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ARGUMENT, "<argument>");
     r = Argument_0(b, l + 1);
+    if (!r) r = ReferenceExpression(b, l + 1);
     if (!r) r = Expression(b, l + 1, -1);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -315,31 +318,45 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // INFLIGHT_SPECIFIER CLASS IDENTIFIER (EXTENDS CustomType)? (IMPLEMENTS CustomType (COMMA CustomType)*)? ClassImplementation
+  // PUBLIC? INFLIGHT_SPECIFIER? CLASS IDENTIFIER (EXTENDS CustomType)? (IMPLEMENTS CustomType (COMMA CustomType)*)? ClassImplementation
   public static boolean ClassDefinitionStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ClassDefinitionStatement")) return false;
-    if (!nextTokenIs(b, INFLIGHT_SPECIFIER)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CLASS_DEFINITION_STATEMENT, null);
-    r = consumeTokens(b, 1, INFLIGHT_SPECIFIER, CLASS, IDENTIFIER);
-    p = r; // pin = 1
-    r = r && report_error_(b, ClassDefinitionStatement_3(b, l + 1));
-    r = p && report_error_(b, ClassDefinitionStatement_4(b, l + 1)) && r;
-    r = p && ClassImplementation(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, CLASS_DEFINITION_STATEMENT, "<class definition statement>");
+    r = ClassDefinitionStatement_0(b, l + 1);
+    r = r && ClassDefinitionStatement_1(b, l + 1);
+    r = r && consumeTokens(b, 0, CLASS, IDENTIFIER);
+    r = r && ClassDefinitionStatement_4(b, l + 1);
+    r = r && ClassDefinitionStatement_5(b, l + 1);
+    r = r && ClassImplementation(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // PUBLIC?
+  private static boolean ClassDefinitionStatement_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ClassDefinitionStatement_0")) return false;
+    consumeToken(b, PUBLIC);
+    return true;
+  }
+
+  // INFLIGHT_SPECIFIER?
+  private static boolean ClassDefinitionStatement_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ClassDefinitionStatement_1")) return false;
+    consumeToken(b, INFLIGHT_SPECIFIER);
+    return true;
   }
 
   // (EXTENDS CustomType)?
-  private static boolean ClassDefinitionStatement_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ClassDefinitionStatement_3")) return false;
-    ClassDefinitionStatement_3_0(b, l + 1);
+  private static boolean ClassDefinitionStatement_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ClassDefinitionStatement_4")) return false;
+    ClassDefinitionStatement_4_0(b, l + 1);
     return true;
   }
 
   // EXTENDS CustomType
-  private static boolean ClassDefinitionStatement_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ClassDefinitionStatement_3_0")) return false;
+  private static boolean ClassDefinitionStatement_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ClassDefinitionStatement_4_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, EXTENDS);
@@ -349,38 +366,38 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   // (IMPLEMENTS CustomType (COMMA CustomType)*)?
-  private static boolean ClassDefinitionStatement_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ClassDefinitionStatement_4")) return false;
-    ClassDefinitionStatement_4_0(b, l + 1);
+  private static boolean ClassDefinitionStatement_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ClassDefinitionStatement_5")) return false;
+    ClassDefinitionStatement_5_0(b, l + 1);
     return true;
   }
 
   // IMPLEMENTS CustomType (COMMA CustomType)*
-  private static boolean ClassDefinitionStatement_4_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ClassDefinitionStatement_4_0")) return false;
+  private static boolean ClassDefinitionStatement_5_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ClassDefinitionStatement_5_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, IMPLEMENTS);
     r = r && CustomType(b, l + 1);
-    r = r && ClassDefinitionStatement_4_0_2(b, l + 1);
+    r = r && ClassDefinitionStatement_5_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // (COMMA CustomType)*
-  private static boolean ClassDefinitionStatement_4_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ClassDefinitionStatement_4_0_2")) return false;
+  private static boolean ClassDefinitionStatement_5_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ClassDefinitionStatement_5_0_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!ClassDefinitionStatement_4_0_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "ClassDefinitionStatement_4_0_2", c)) break;
+      if (!ClassDefinitionStatement_5_0_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "ClassDefinitionStatement_5_0_2", c)) break;
     }
     return true;
   }
 
   // COMMA CustomType
-  private static boolean ClassDefinitionStatement_4_0_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ClassDefinitionStatement_4_0_2_0")) return false;
+  private static boolean ClassDefinitionStatement_5_0_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ClassDefinitionStatement_5_0_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
@@ -454,21 +471,20 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_CURLY_BRACE (Initializer | ClassField | MethodDefinition | InflightMethodDefinition )* RIGHT_CURLY_BRACE
+  // LEFT_CURLY_BRACE (Initializer | ClassField | MethodDefinition | InflightMethodDefinition)* RIGHT_CURLY_BRACE
   public static boolean ClassImplementation(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ClassImplementation")) return false;
     if (!nextTokenIs(b, LEFT_CURLY_BRACE)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CLASS_IMPLEMENTATION, null);
+    boolean r;
+    Marker m = enter_section_(b);
     r = consumeToken(b, LEFT_CURLY_BRACE);
-    p = r; // pin = 1
-    r = r && report_error_(b, ClassImplementation_1(b, l + 1));
-    r = p && consumeToken(b, RIGHT_CURLY_BRACE) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    r = r && ClassImplementation_1(b, l + 1);
+    r = r && consumeToken(b, RIGHT_CURLY_BRACE);
+    exit_section_(b, m, CLASS_IMPLEMENTATION, r);
+    return r;
   }
 
-  // (Initializer | ClassField | MethodDefinition | InflightMethodDefinition )*
+  // (Initializer | ClassField | MethodDefinition | InflightMethodDefinition)*
   private static boolean ClassImplementation_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ClassImplementation_1")) return false;
     while (true) {
@@ -652,66 +668,117 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ELIF Expression BlockStatement
+  // (ELIF | ELSE IF) (Expression BlockStatement | LET IDENTIFIER ASSIGNMENT Expression BlockStatement)
   public static boolean ElIfBlock(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ElIfBlock")) return false;
-    if (!nextTokenIs(b, ELIF)) return false;
+    if (!nextTokenIs(b, "<el if block>", ELIF, ELSE)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, EL_IF_BLOCK, "<el if block>");
+    r = ElIfBlock_0(b, l + 1);
+    r = r && ElIfBlock_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // ELIF | ELSE IF
+  private static boolean ElIfBlock_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ElIfBlock_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, ELIF);
+    if (!r) r = parseTokens(b, 0, ELSE, IF);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // Expression BlockStatement | LET IDENTIFIER ASSIGNMENT Expression BlockStatement
+  private static boolean ElIfBlock_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ElIfBlock_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = ElIfBlock_1_0(b, l + 1);
+    if (!r) r = ElIfBlock_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // Expression BlockStatement
+  private static boolean ElIfBlock_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ElIfBlock_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = Expression(b, l + 1, -1);
+    r = r && BlockStatement(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // LET IDENTIFIER ASSIGNMENT Expression BlockStatement
+  private static boolean ElIfBlock_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ElIfBlock_1_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, LET, IDENTIFIER, ASSIGNMENT);
     r = r && Expression(b, l + 1, -1);
     r = r && BlockStatement(b, l + 1);
-    exit_section_(b, m, EL_IF_BLOCK, r);
+    exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // ENUM IDENTIFIER LEFT_CURLY_BRACE (EnumField (COMMA EnumField)* COMMA?)? RIGHT_CURLY_BRACE
+  // AccessModifier? ENUM IDENTIFIER LEFT_CURLY_BRACE (EnumField (COMMA EnumField)* COMMA?)? RIGHT_CURLY_BRACE
   public static boolean EnumDefinitionStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "EnumDefinitionStatement")) return false;
-    if (!nextTokenIs(b, ENUM)) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, ENUM, IDENTIFIER, LEFT_CURLY_BRACE);
-    r = r && EnumDefinitionStatement_3(b, l + 1);
+    Marker m = enter_section_(b, l, _NONE_, ENUM_DEFINITION_STATEMENT, "<enum definition statement>");
+    r = EnumDefinitionStatement_0(b, l + 1);
+    r = r && consumeTokens(b, 0, ENUM, IDENTIFIER, LEFT_CURLY_BRACE);
+    r = r && EnumDefinitionStatement_4(b, l + 1);
     r = r && consumeToken(b, RIGHT_CURLY_BRACE);
-    exit_section_(b, m, ENUM_DEFINITION_STATEMENT, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
+  // AccessModifier?
+  private static boolean EnumDefinitionStatement_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "EnumDefinitionStatement_0")) return false;
+    AccessModifier(b, l + 1);
+    return true;
+  }
+
   // (EnumField (COMMA EnumField)* COMMA?)?
-  private static boolean EnumDefinitionStatement_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EnumDefinitionStatement_3")) return false;
-    EnumDefinitionStatement_3_0(b, l + 1);
+  private static boolean EnumDefinitionStatement_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "EnumDefinitionStatement_4")) return false;
+    EnumDefinitionStatement_4_0(b, l + 1);
     return true;
   }
 
   // EnumField (COMMA EnumField)* COMMA?
-  private static boolean EnumDefinitionStatement_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EnumDefinitionStatement_3_0")) return false;
+  private static boolean EnumDefinitionStatement_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "EnumDefinitionStatement_4_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = EnumField(b, l + 1);
-    r = r && EnumDefinitionStatement_3_0_1(b, l + 1);
-    r = r && EnumDefinitionStatement_3_0_2(b, l + 1);
+    r = r && EnumDefinitionStatement_4_0_1(b, l + 1);
+    r = r && EnumDefinitionStatement_4_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // (COMMA EnumField)*
-  private static boolean EnumDefinitionStatement_3_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EnumDefinitionStatement_3_0_1")) return false;
+  private static boolean EnumDefinitionStatement_4_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "EnumDefinitionStatement_4_0_1")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!EnumDefinitionStatement_3_0_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "EnumDefinitionStatement_3_0_1", c)) break;
+      if (!EnumDefinitionStatement_4_0_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "EnumDefinitionStatement_4_0_1", c)) break;
     }
     return true;
   }
 
   // COMMA EnumField
-  private static boolean EnumDefinitionStatement_3_0_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EnumDefinitionStatement_3_0_1_0")) return false;
+  private static boolean EnumDefinitionStatement_4_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "EnumDefinitionStatement_4_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
@@ -721,8 +788,8 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   // COMMA?
-  private static boolean EnumDefinitionStatement_3_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "EnumDefinitionStatement_3_0_2")) return false;
+  private static boolean EnumDefinitionStatement_4_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "EnumDefinitionStatement_4_0_2")) return false;
     consumeToken(b, COMMA);
     return true;
   }
@@ -766,7 +833,7 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // BuiltInType nb
+  // BuiltInType
   //     | BuiltInContainerType
   //     | FunctionType
   //     | CustomType
@@ -774,24 +841,11 @@ public class WingParser implements PsiParser, LightPsiParser {
   static boolean FieldType(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "FieldType")) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = FieldType_0(b, l + 1);
+    r = BuiltInType(b, l + 1);
     if (!r) r = BuiltInContainerType(b, l + 1);
     if (!r) r = FunctionType(b, l + 1);
     if (!r) r = CustomType(b, l + 1);
     if (!r) r = JsonContainerType(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // BuiltInType nb
-  private static boolean FieldType_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "FieldType_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = BuiltInType(b, l + 1);
-    r = r && consumeToken(b, NB);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1039,6 +1093,7 @@ public class WingParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // BRING IDENTIFIER SEMICOLON
   //     | BRING IDENTIFIER ALIAS IDENTIFIER SEMICOLON
+  //     | BRING STRING_LITERAL ALIAS IDENTIFIER SEMICOLON
   public static boolean ImportStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ImportStatement")) return false;
     if (!nextTokenIs(b, BRING)) return false;
@@ -1046,6 +1101,7 @@ public class WingParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = parseTokens(b, 0, BRING, IDENTIFIER, SEMICOLON);
     if (!r) r = parseTokens(b, 0, BRING, IDENTIFIER, ALIAS, IDENTIFIER, SEMICOLON);
+    if (!r) r = parseTokens(b, 0, BRING, STRING_LITERAL, ALIAS, IDENTIFIER, SEMICOLON);
     exit_section_(b, m, IMPORT_STATEMENT, r);
     return r;
   }
@@ -1075,7 +1131,7 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ExternModifier? AccessModifier? static? INFLIGHT_SPECIFIER IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON)
+  // AccessModifier? ExternModifier? (INFLIGHT_SPECIFIER STATIC? | STATIC? INFLIGHT_SPECIFIER) IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON)
   public static boolean InflightMethodDefinition(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "InflightMethodDefinition")) return false;
     boolean r, p;
@@ -1083,46 +1139,86 @@ public class WingParser implements PsiParser, LightPsiParser {
     r = InflightMethodDefinition_0(b, l + 1);
     r = r && InflightMethodDefinition_1(b, l + 1);
     r = r && InflightMethodDefinition_2(b, l + 1);
-    r = r && consumeTokens(b, 1, INFLIGHT_SPECIFIER, IDENTIFIER);
-    p = r; // pin = 4
+    r = r && consumeToken(b, IDENTIFIER);
+    p = r; // pin = IDENTIFIER
     r = r && report_error_(b, ParameterList(b, l + 1));
-    r = p && report_error_(b, InflightMethodDefinition_6(b, l + 1)) && r;
-    r = p && InflightMethodDefinition_7(b, l + 1) && r;
+    r = p && report_error_(b, InflightMethodDefinition_5(b, l + 1)) && r;
+    r = p && InflightMethodDefinition_6(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // ExternModifier?
+  // AccessModifier?
   private static boolean InflightMethodDefinition_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "InflightMethodDefinition_0")) return false;
-    ExternModifier(b, l + 1);
-    return true;
-  }
-
-  // AccessModifier?
-  private static boolean InflightMethodDefinition_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "InflightMethodDefinition_1")) return false;
     AccessModifier(b, l + 1);
     return true;
   }
 
-  // static?
+  // ExternModifier?
+  private static boolean InflightMethodDefinition_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InflightMethodDefinition_1")) return false;
+    ExternModifier(b, l + 1);
+    return true;
+  }
+
+  // INFLIGHT_SPECIFIER STATIC? | STATIC? INFLIGHT_SPECIFIER
   private static boolean InflightMethodDefinition_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "InflightMethodDefinition_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = InflightMethodDefinition_2_0(b, l + 1);
+    if (!r) r = InflightMethodDefinition_2_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // INFLIGHT_SPECIFIER STATIC?
+  private static boolean InflightMethodDefinition_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InflightMethodDefinition_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, INFLIGHT_SPECIFIER);
+    r = r && InflightMethodDefinition_2_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // STATIC?
+  private static boolean InflightMethodDefinition_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InflightMethodDefinition_2_0_1")) return false;
+    consumeToken(b, STATIC);
+    return true;
+  }
+
+  // STATIC? INFLIGHT_SPECIFIER
+  private static boolean InflightMethodDefinition_2_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InflightMethodDefinition_2_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = InflightMethodDefinition_2_1_0(b, l + 1);
+    r = r && consumeToken(b, INFLIGHT_SPECIFIER);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // STATIC?
+  private static boolean InflightMethodDefinition_2_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InflightMethodDefinition_2_1_0")) return false;
     consumeToken(b, STATIC);
     return true;
   }
 
   // TypeAnnotation?
-  private static boolean InflightMethodDefinition_6(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "InflightMethodDefinition_6")) return false;
+  private static boolean InflightMethodDefinition_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InflightMethodDefinition_5")) return false;
     TypeAnnotation(b, l + 1);
     return true;
   }
 
   // BlockStatement | SEMICOLON
-  private static boolean InflightMethodDefinition_7(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "InflightMethodDefinition_7")) return false;
+  private static boolean InflightMethodDefinition_6(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InflightMethodDefinition_6")) return false;
     boolean r;
     r = BlockStatement(b, l + 1);
     if (!r) r = consumeToken(b, SEMICOLON);
@@ -1134,86 +1230,133 @@ public class WingParser implements PsiParser, LightPsiParser {
   public static boolean InflightMethodSignature(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "InflightMethodSignature")) return false;
     if (!nextTokenIs(b, INFLIGHT_SPECIFIER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, INFLIGHT_SPECIFIER, IDENTIFIER);
-    r = r && ParameterList(b, l + 1);
-    r = r && TypeAnnotation(b, l + 1);
-    r = r && consumeToken(b, SEMICOLON);
-    exit_section_(b, m, INFLIGHT_METHOD_SIGNATURE, r);
-    return r;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, INFLIGHT_METHOD_SIGNATURE, null);
+    r = consumeTokens(b, 2, INFLIGHT_SPECIFIER, IDENTIFIER);
+    p = r; // pin = 2
+    r = r && report_error_(b, ParameterList(b, l + 1));
+    r = p && report_error_(b, TypeAnnotation(b, l + 1)) && r;
+    r = p && consumeToken(b, SEMICOLON) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
   // INFLIGHT_SPECIFIER? NEW ParameterList BlockStatement
+  //     | INFLIGHT_SPECIFIER? NEW Expression
   public static boolean Initializer(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Initializer")) return false;
     if (!nextTokenIs(b, "<initializer>", INFLIGHT_SPECIFIER, NEW)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, INITIALIZER, "<initializer>");
     r = Initializer_0(b, l + 1);
-    r = r && consumeToken(b, NEW);
-    r = r && ParameterList(b, l + 1);
-    r = r && BlockStatement(b, l + 1);
+    if (!r) r = Initializer_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // INFLIGHT_SPECIFIER?
+  // INFLIGHT_SPECIFIER? NEW ParameterList BlockStatement
   private static boolean Initializer_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Initializer_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = Initializer_0_0(b, l + 1);
+    r = r && consumeToken(b, NEW);
+    r = r && ParameterList(b, l + 1);
+    r = r && BlockStatement(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // INFLIGHT_SPECIFIER?
+  private static boolean Initializer_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "Initializer_0_0")) return false;
+    consumeToken(b, INFLIGHT_SPECIFIER);
+    return true;
+  }
+
+  // INFLIGHT_SPECIFIER? NEW Expression
+  private static boolean Initializer_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "Initializer_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = Initializer_1_0(b, l + 1);
+    r = r && consumeToken(b, NEW);
+    r = r && Expression(b, l + 1, -1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // INFLIGHT_SPECIFIER?
+  private static boolean Initializer_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "Initializer_1_0")) return false;
     consumeToken(b, INFLIGHT_SPECIFIER);
     return true;
   }
 
   /* ********************************************************** */
-  // INTERFACE IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? InterfaceImplementation
+  // AccessModifier? INFLIGHT_SPECIFIER? INTERFACE IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? InterfaceImplementation
   public static boolean InterfaceDefinitionStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "InterfaceDefinitionStatement")) return false;
-    if (!nextTokenIs(b, INTERFACE)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, INTERFACE_DEFINITION_STATEMENT, null);
-    r = consumeTokens(b, 1, INTERFACE, IDENTIFIER);
-    p = r; // pin = 1
-    r = r && report_error_(b, InterfaceDefinitionStatement_2(b, l + 1));
+    Marker m = enter_section_(b, l, _NONE_, INTERFACE_DEFINITION_STATEMENT, "<interface definition statement>");
+    r = InterfaceDefinitionStatement_0(b, l + 1);
+    r = r && InterfaceDefinitionStatement_1(b, l + 1);
+    r = r && consumeTokens(b, 1, INTERFACE, IDENTIFIER);
+    p = r; // pin = 3
+    r = r && report_error_(b, InterfaceDefinitionStatement_4(b, l + 1));
     r = p && InterfaceImplementation(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
+  // AccessModifier?
+  private static boolean InterfaceDefinitionStatement_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_0")) return false;
+    AccessModifier(b, l + 1);
+    return true;
+  }
+
+  // INFLIGHT_SPECIFIER?
+  private static boolean InterfaceDefinitionStatement_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_1")) return false;
+    consumeToken(b, INFLIGHT_SPECIFIER);
+    return true;
+  }
+
   // (EXTENDS CustomType (COMMA CustomType)*)?
-  private static boolean InterfaceDefinitionStatement_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_2")) return false;
-    InterfaceDefinitionStatement_2_0(b, l + 1);
+  private static boolean InterfaceDefinitionStatement_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_4")) return false;
+    InterfaceDefinitionStatement_4_0(b, l + 1);
     return true;
   }
 
   // EXTENDS CustomType (COMMA CustomType)*
-  private static boolean InterfaceDefinitionStatement_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_2_0")) return false;
+  private static boolean InterfaceDefinitionStatement_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_4_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, EXTENDS);
     r = r && CustomType(b, l + 1);
-    r = r && InterfaceDefinitionStatement_2_0_2(b, l + 1);
+    r = r && InterfaceDefinitionStatement_4_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // (COMMA CustomType)*
-  private static boolean InterfaceDefinitionStatement_2_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_2_0_2")) return false;
+  private static boolean InterfaceDefinitionStatement_4_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_4_0_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!InterfaceDefinitionStatement_2_0_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "InterfaceDefinitionStatement_2_0_2", c)) break;
+      if (!InterfaceDefinitionStatement_4_0_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "InterfaceDefinitionStatement_4_0_2", c)) break;
     }
     return true;
   }
 
   // COMMA CustomType
-  private static boolean InterfaceDefinitionStatement_2_0_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_2_0_2_0")) return false;
+  private static boolean InterfaceDefinitionStatement_4_0_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterfaceDefinitionStatement_4_0_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
@@ -1333,21 +1476,33 @@ public class WingParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // (String | IDENTIFIER) COLON Expression
+  //     | IDENTIFIER
   public static boolean JsonMapLiteralMember(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "JsonMapLiteralMember")) return false;
     if (!nextTokenIs(b, "<json map literal member>", IDENTIFIER, STRING_LITERAL)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, JSON_MAP_LITERAL_MEMBER, "<json map literal member>");
     r = JsonMapLiteralMember_0(b, l + 1);
-    r = r && consumeToken(b, COLON);
-    r = r && Expression(b, l + 1, -1);
+    if (!r) r = consumeToken(b, IDENTIFIER);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // String | IDENTIFIER
+  // (String | IDENTIFIER) COLON Expression
   private static boolean JsonMapLiteralMember_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "JsonMapLiteralMember_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = JsonMapLiteralMember_0_0(b, l + 1);
+    r = r && consumeToken(b, COLON);
+    r = r && Expression(b, l + 1, -1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // String | IDENTIFIER
+  private static boolean JsonMapLiteralMember_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "JsonMapLiteralMember_0_0")) return false;
     boolean r;
     r = String(b, l + 1);
     if (!r) r = consumeToken(b, IDENTIFIER);
@@ -1443,16 +1598,15 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // String ARROW Expression
+  // Expression ARROW Expression
   public static boolean MapLiteralMember(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "MapLiteralMember")) return false;
-    if (!nextTokenIs(b, STRING_LITERAL)) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = String(b, l + 1);
+    Marker m = enter_section_(b, l, _NONE_, MAP_LITERAL_MEMBER, "<map literal member>");
+    r = Expression(b, l + 1, -1);
     r = r && consumeToken(b, ARROW);
     r = r && Expression(b, l + 1, -1);
-    exit_section_(b, m, MAP_LITERAL_MEMBER, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -1480,7 +1634,7 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ExternModifier? AccessModifier? static? 'async'? IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON)
+  // AccessModifier? ExternModifier? STATIC? 'async'? IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON)
   public static boolean MethodDefinition(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "MethodDefinition")) return false;
     boolean r, p;
@@ -1490,7 +1644,7 @@ public class WingParser implements PsiParser, LightPsiParser {
     r = r && MethodDefinition_2(b, l + 1);
     r = r && MethodDefinition_3(b, l + 1);
     r = r && consumeToken(b, IDENTIFIER);
-    p = r; // pin = 5
+    p = r; // pin = IDENTIFIER
     r = r && report_error_(b, ParameterList(b, l + 1));
     r = p && report_error_(b, MethodDefinition_6(b, l + 1)) && r;
     r = p && MethodDefinition_7(b, l + 1) && r;
@@ -1498,21 +1652,21 @@ public class WingParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // ExternModifier?
+  // AccessModifier?
   private static boolean MethodDefinition_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "MethodDefinition_0")) return false;
-    ExternModifier(b, l + 1);
-    return true;
-  }
-
-  // AccessModifier?
-  private static boolean MethodDefinition_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "MethodDefinition_1")) return false;
     AccessModifier(b, l + 1);
     return true;
   }
 
-  // static?
+  // ExternModifier?
+  private static boolean MethodDefinition_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "MethodDefinition_1")) return false;
+    ExternModifier(b, l + 1);
+    return true;
+  }
+
+  // STATIC?
   private static boolean MethodDefinition_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "MethodDefinition_2")) return false;
     consumeToken(b, STATIC);
@@ -1823,118 +1977,6 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // CLASS IDENTIFIER (EXTENDS CustomType)? (IMPLEMENTS CustomType (COMMA CustomType)*)?  ResourceImplementation
-  public static boolean ResourceDefinitionStatement(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ResourceDefinitionStatement")) return false;
-    if (!nextTokenIs(b, CLASS)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, RESOURCE_DEFINITION_STATEMENT, null);
-    r = consumeTokens(b, 1, CLASS, IDENTIFIER);
-    p = r; // pin = 1
-    r = r && report_error_(b, ResourceDefinitionStatement_2(b, l + 1));
-    r = p && report_error_(b, ResourceDefinitionStatement_3(b, l + 1)) && r;
-    r = p && ResourceImplementation(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // (EXTENDS CustomType)?
-  private static boolean ResourceDefinitionStatement_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ResourceDefinitionStatement_2")) return false;
-    ResourceDefinitionStatement_2_0(b, l + 1);
-    return true;
-  }
-
-  // EXTENDS CustomType
-  private static boolean ResourceDefinitionStatement_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ResourceDefinitionStatement_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, EXTENDS);
-    r = r && CustomType(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (IMPLEMENTS CustomType (COMMA CustomType)*)?
-  private static boolean ResourceDefinitionStatement_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ResourceDefinitionStatement_3")) return false;
-    ResourceDefinitionStatement_3_0(b, l + 1);
-    return true;
-  }
-
-  // IMPLEMENTS CustomType (COMMA CustomType)*
-  private static boolean ResourceDefinitionStatement_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ResourceDefinitionStatement_3_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IMPLEMENTS);
-    r = r && CustomType(b, l + 1);
-    r = r && ResourceDefinitionStatement_3_0_2(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (COMMA CustomType)*
-  private static boolean ResourceDefinitionStatement_3_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ResourceDefinitionStatement_3_0_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!ResourceDefinitionStatement_3_0_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "ResourceDefinitionStatement_3_0_2", c)) break;
-    }
-    return true;
-  }
-
-  // COMMA CustomType
-  private static boolean ResourceDefinitionStatement_3_0_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ResourceDefinitionStatement_3_0_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COMMA);
-    r = r && CustomType(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // LEFT_CURLY_BRACE (Initializer | ClassField | MethodDefinition | InflightMethodDefinition )* RIGHT_CURLY_BRACE
-  public static boolean ResourceImplementation(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ResourceImplementation")) return false;
-    if (!nextTokenIs(b, LEFT_CURLY_BRACE)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, RESOURCE_IMPLEMENTATION, null);
-    r = consumeToken(b, LEFT_CURLY_BRACE);
-    p = r; // pin = 1
-    r = r && report_error_(b, ResourceImplementation_1(b, l + 1));
-    r = p && consumeToken(b, RIGHT_CURLY_BRACE) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // (Initializer | ClassField | MethodDefinition | InflightMethodDefinition )*
-  private static boolean ResourceImplementation_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ResourceImplementation_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!ResourceImplementation_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "ResourceImplementation_1", c)) break;
-    }
-    return true;
-  }
-
-  // Initializer | ClassField | MethodDefinition | InflightMethodDefinition
-  private static boolean ResourceImplementation_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ResourceImplementation_1_0")) return false;
-    boolean r;
-    r = Initializer(b, l + 1);
-    if (!r) r = ClassField(b, l + 1);
-    if (!r) r = MethodDefinition(b, l + 1);
-    if (!r) r = InflightMethodDefinition(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
   // RETURN Expression SEMICOLON
   public static boolean ReturnStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ReturnStatement")) return false;
@@ -1961,7 +2003,7 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // BuiltInContainerType? LEFT_CURLY_BRACE( Expression (COMMA Expression)* COMMA?)? RIGHT_CURLY_BRACE
+  // BuiltInContainerType? LEFT_CURLY_BRACE (Expression (COMMA Expression)* COMMA?)? RIGHT_CURLY_BRACE
   public static boolean SetLiteralExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "SetLiteralExpression")) return false;
     boolean r;
@@ -1981,7 +2023,7 @@ public class WingParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ( Expression (COMMA Expression)* COMMA?)?
+  // (Expression (COMMA Expression)* COMMA?)?
   private static boolean SetLiteralExpression_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "SetLiteralExpression_2")) return false;
     SetLiteralExpression_2_0(b, l + 1);
@@ -2032,6 +2074,9 @@ public class WingParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // ImportStatementBlock
   //     | TestStatement
+  //     | VariableAssignmentStatement
+  //     | VariableDefinitionStatement
+  //     | ReturnStatement
   //     | ExpressionStatement
   //     | ForInLoopStatement
   //     | IfStatement
@@ -2039,21 +2084,21 @@ public class WingParser implements PsiParser, LightPsiParser {
   //     | ContinueStatement
   //     | WhileStatement
   //     | ClassDefinitionStatement
-  //     | VariableAssignmentStatement
-  //     | VariableDefinitionStatement
-  //     | ResourceDefinitionStatement
-  //     | ReturnStatement
   //     | InterfaceDefinitionStatement
   //     | StructDefinitionStatement
   //     | EnumDefinitionStatement
   //     | IfLetStatement
   //     | TryCatchStatement
   //     | SuperConstructorStatement
+  //     | ThrowStatement
   static boolean Statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Statement")) return false;
     boolean r;
     r = ImportStatementBlock(b, l + 1);
     if (!r) r = TestStatement(b, l + 1);
+    if (!r) r = VariableAssignmentStatement(b, l + 1);
+    if (!r) r = VariableDefinitionStatement(b, l + 1);
+    if (!r) r = ReturnStatement(b, l + 1);
     if (!r) r = ExpressionStatement(b, l + 1);
     if (!r) r = ForInLoopStatement(b, l + 1);
     if (!r) r = IfStatement(b, l + 1);
@@ -2061,16 +2106,13 @@ public class WingParser implements PsiParser, LightPsiParser {
     if (!r) r = ContinueStatement(b, l + 1);
     if (!r) r = WhileStatement(b, l + 1);
     if (!r) r = ClassDefinitionStatement(b, l + 1);
-    if (!r) r = VariableAssignmentStatement(b, l + 1);
-    if (!r) r = VariableDefinitionStatement(b, l + 1);
-    if (!r) r = ResourceDefinitionStatement(b, l + 1);
-    if (!r) r = ReturnStatement(b, l + 1);
     if (!r) r = InterfaceDefinitionStatement(b, l + 1);
     if (!r) r = StructDefinitionStatement(b, l + 1);
     if (!r) r = EnumDefinitionStatement(b, l + 1);
     if (!r) r = IfLetStatement(b, l + 1);
     if (!r) r = TryCatchStatement(b, l + 1);
     if (!r) r = SuperConstructorStatement(b, l + 1);
+    if (!r) r = ThrowStatement(b, l + 1);
     return r;
   }
 
@@ -2087,53 +2129,60 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // STRUCT IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? StructImplementation
+  // AccessModifier? STRUCT IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? StructImplementation
   public static boolean StructDefinitionStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "StructDefinitionStatement")) return false;
-    if (!nextTokenIs(b, STRUCT)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, STRUCT_DEFINITION_STATEMENT, null);
-    r = consumeTokens(b, 1, STRUCT, IDENTIFIER);
-    p = r; // pin = 1
-    r = r && report_error_(b, StructDefinitionStatement_2(b, l + 1));
+    Marker m = enter_section_(b, l, _NONE_, STRUCT_DEFINITION_STATEMENT, "<struct definition statement>");
+    r = StructDefinitionStatement_0(b, l + 1);
+    r = r && consumeTokens(b, 1, STRUCT, IDENTIFIER);
+    p = r; // pin = 2
+    r = r && report_error_(b, StructDefinitionStatement_3(b, l + 1));
     r = p && StructImplementation(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
+  // AccessModifier?
+  private static boolean StructDefinitionStatement_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StructDefinitionStatement_0")) return false;
+    AccessModifier(b, l + 1);
+    return true;
+  }
+
   // (EXTENDS CustomType (COMMA CustomType)*)?
-  private static boolean StructDefinitionStatement_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "StructDefinitionStatement_2")) return false;
-    StructDefinitionStatement_2_0(b, l + 1);
+  private static boolean StructDefinitionStatement_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StructDefinitionStatement_3")) return false;
+    StructDefinitionStatement_3_0(b, l + 1);
     return true;
   }
 
   // EXTENDS CustomType (COMMA CustomType)*
-  private static boolean StructDefinitionStatement_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "StructDefinitionStatement_2_0")) return false;
+  private static boolean StructDefinitionStatement_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StructDefinitionStatement_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, EXTENDS);
     r = r && CustomType(b, l + 1);
-    r = r && StructDefinitionStatement_2_0_2(b, l + 1);
+    r = r && StructDefinitionStatement_3_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // (COMMA CustomType)*
-  private static boolean StructDefinitionStatement_2_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "StructDefinitionStatement_2_0_2")) return false;
+  private static boolean StructDefinitionStatement_3_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StructDefinitionStatement_3_0_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!StructDefinitionStatement_2_0_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "StructDefinitionStatement_2_0_2", c)) break;
+      if (!StructDefinitionStatement_3_0_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "StructDefinitionStatement_3_0_2", c)) break;
     }
     return true;
   }
 
   // COMMA CustomType
-  private static boolean StructDefinitionStatement_2_0_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "StructDefinitionStatement_2_0_2_0")) return false;
+  private static boolean StructDefinitionStatement_3_0_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StructDefinitionStatement_3_0_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
@@ -2225,6 +2274,20 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // THROW Expression SEMICOLON
+  public static boolean ThrowStatement(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ThrowStatement")) return false;
+    if (!nextTokenIs(b, THROW)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, THROW);
+    r = r && Expression(b, l + 1, -1);
+    r = r && consumeToken(b, SEMICOLON);
+    exit_section_(b, m, THROW_STATEMENT, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // TRY BlockStatement CatchBlock? FinallyBlock?
   public static boolean TryCatchStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "TryCatchStatement")) return false;
@@ -2294,71 +2357,27 @@ public class WingParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ReferenceExpression ASSIGNMENT Expression SEMICOLON
-  //     | StructuredAccessExpression ASSIGNMENT Expression SEMICOLON
-  //     | NestedIdentifierExpression ASSIGNMENT Expression SEMICOLON
-  //     | NestedIdentifierJsonExpression ASSIGNMENT Expression SEMICOLON
+  // (ReferenceExpression | StructuredAccessExpression | NestedIdentifierExpression | NestedIdentifierJsonExpression) ASSIGNMENT Expression SEMICOLON
   public static boolean VariableAssignmentStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VariableAssignmentStatement")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, VARIABLE_ASSIGNMENT_STATEMENT, "<variable assignment statement>");
     r = VariableAssignmentStatement_0(b, l + 1);
-    if (!r) r = VariableAssignmentStatement_1(b, l + 1);
-    if (!r) r = VariableAssignmentStatement_2(b, l + 1);
-    if (!r) r = VariableAssignmentStatement_3(b, l + 1);
+    r = r && consumeToken(b, ASSIGNMENT);
+    r = r && Expression(b, l + 1, -1);
+    r = r && consumeToken(b, SEMICOLON);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // ReferenceExpression ASSIGNMENT Expression SEMICOLON
+  // ReferenceExpression | StructuredAccessExpression | NestedIdentifierExpression | NestedIdentifierJsonExpression
   private static boolean VariableAssignmentStatement_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VariableAssignmentStatement_0")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = ReferenceExpression(b, l + 1);
-    r = r && consumeToken(b, ASSIGNMENT);
-    r = r && Expression(b, l + 1, -1);
-    r = r && consumeToken(b, SEMICOLON);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // StructuredAccessExpression ASSIGNMENT Expression SEMICOLON
-  private static boolean VariableAssignmentStatement_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "VariableAssignmentStatement_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = Expression(b, l + 1, 9);
-    r = r && consumeToken(b, ASSIGNMENT);
-    r = r && Expression(b, l + 1, -1);
-    r = r && consumeToken(b, SEMICOLON);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // NestedIdentifierExpression ASSIGNMENT Expression SEMICOLON
-  private static boolean VariableAssignmentStatement_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "VariableAssignmentStatement_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = Expression(b, l + 1, 6);
-    r = r && consumeToken(b, ASSIGNMENT);
-    r = r && Expression(b, l + 1, -1);
-    r = r && consumeToken(b, SEMICOLON);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // NestedIdentifierJsonExpression ASSIGNMENT Expression SEMICOLON
-  private static boolean VariableAssignmentStatement_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "VariableAssignmentStatement_3")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = NestedIdentifierJsonExpression(b, l + 1);
-    r = r && consumeToken(b, ASSIGNMENT);
-    r = r && Expression(b, l + 1, -1);
-    r = r && consumeToken(b, SEMICOLON);
-    exit_section_(b, m, null, r);
+    if (!r) r = Expression(b, l + 1, 9);
+    if (!r) r = Expression(b, l + 1, 6);
+    if (!r) r = NestedIdentifierJsonExpression(b, l + 1);
     return r;
   }
 
@@ -2658,50 +2677,54 @@ public class WingParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // IDENTIFIER (Accessor IDENTIFIER)*
-  //     | IDENTIFIER
+  // IDENTIFIER ArgumentList? (Accessor IDENTIFIER ArgumentList?)*
   public static boolean ReferenceExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ReferenceExpression")) return false;
     if (!nextTokenIsSmart(b, IDENTIFIER)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = ReferenceExpression_0(b, l + 1);
-    if (!r) r = consumeTokenSmart(b, IDENTIFIER);
+    r = consumeTokenSmart(b, IDENTIFIER);
+    r = r && ReferenceExpression_1(b, l + 1);
+    r = r && ReferenceExpression_2(b, l + 1);
     exit_section_(b, m, REFERENCE_EXPRESSION, r);
     return r;
   }
 
-  // IDENTIFIER (Accessor IDENTIFIER)*
-  private static boolean ReferenceExpression_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ReferenceExpression_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokenSmart(b, IDENTIFIER);
-    r = r && ReferenceExpression_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
+  // ArgumentList?
+  private static boolean ReferenceExpression_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ReferenceExpression_1")) return false;
+    ArgumentList(b, l + 1);
+    return true;
   }
 
-  // (Accessor IDENTIFIER)*
-  private static boolean ReferenceExpression_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ReferenceExpression_0_1")) return false;
+  // (Accessor IDENTIFIER ArgumentList?)*
+  private static boolean ReferenceExpression_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ReferenceExpression_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!ReferenceExpression_0_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "ReferenceExpression_0_1", c)) break;
+      if (!ReferenceExpression_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "ReferenceExpression_2", c)) break;
     }
     return true;
   }
 
-  // Accessor IDENTIFIER
-  private static boolean ReferenceExpression_0_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ReferenceExpression_0_1_0")) return false;
+  // Accessor IDENTIFIER ArgumentList?
+  private static boolean ReferenceExpression_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ReferenceExpression_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = Accessor(b, l + 1);
     r = r && consumeToken(b, IDENTIFIER);
+    r = r && ReferenceExpression_2_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // ArgumentList?
+  private static boolean ReferenceExpression_2_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ReferenceExpression_2_0_2")) return false;
+    ArgumentList(b, l + 1);
+    return true;
   }
 
   // Accessor IDENTIFIER?
@@ -2774,14 +2797,14 @@ public class WingParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // INFLIGHT_SPECIFIER ParameterList TypeAnnotation? ARROW BlockStatement
+  // INFLIGHT_SPECIFIER ArgumentList TypeAnnotation? ARROW BlockStatement
   public static boolean InflightClosureExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "InflightClosureExpression")) return false;
     if (!nextTokenIsSmart(b, INFLIGHT_SPECIFIER)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokenSmart(b, INFLIGHT_SPECIFIER);
-    r = r && ParameterList(b, l + 1);
+    r = r && ArgumentList(b, l + 1);
     r = r && InflightClosureExpression_2(b, l + 1);
     r = r && consumeToken(b, ARROW);
     r = r && BlockStatement(b, l + 1);

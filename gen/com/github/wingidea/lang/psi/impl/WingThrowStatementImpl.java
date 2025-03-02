@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.wingidea.lang.psi.WingElementTypes.*;
 import com.github.wingidea.lang.psi.*;
 
-public class WingResourceDefinitionStatementImpl extends WingElementImpl implements WingResourceDefinitionStatement {
+public class WingThrowStatementImpl extends WingElementImpl implements WingThrowStatement {
 
-  public WingResourceDefinitionStatementImpl(@NotNull ASTNode node) {
+  public WingThrowStatementImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull WingVisitor visitor) {
-    visitor.visitResourceDefinitionStatement(this);
+    visitor.visitThrowStatement(this);
   }
 
   @Override
@@ -27,9 +27,9 @@ public class WingResourceDefinitionStatementImpl extends WingElementImpl impleme
   }
 
   @Override
-  @Nullable
-  public WingResourceImplementation getResourceImplementation() {
-    return findChildByClass(WingResourceImplementation.class);
+  @NotNull
+  public WingExpression getExpression() {
+    return findNotNullChildByClass(WingExpression.class);
   }
 
 }

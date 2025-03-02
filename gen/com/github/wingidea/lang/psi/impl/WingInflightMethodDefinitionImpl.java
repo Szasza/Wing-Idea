@@ -57,9 +57,9 @@ public class WingInflightMethodDefinitionImpl extends WingElementImpl implements
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement getIdentifier() {
-    return findChildByType(IDENTIFIER);
+    return findNotNullChildByType(IDENTIFIER);
   }
 
 }

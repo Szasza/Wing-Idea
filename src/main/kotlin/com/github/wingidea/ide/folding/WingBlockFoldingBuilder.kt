@@ -1,7 +1,6 @@
 package com.github.wingidea.ide.folding
 
 import com.github.wingidea.lang.psi.WingBlockStatement
-import com.github.wingidea.lang.psi.WingResourceImplementation
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -15,7 +14,6 @@ class WingBlockFoldingBuilder : FoldingBuilderEx(), DumbAware {
         val blocks = PsiTreeUtil.findChildrenOfAnyType(
             root,
             WingBlockStatement::class.java,
-            WingResourceImplementation::class.java,
         )
         return blocks.map { FoldingDescriptor(it, it.textRange) }.toTypedArray()
     }

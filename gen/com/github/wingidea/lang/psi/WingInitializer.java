@@ -7,10 +7,13 @@ import com.intellij.psi.PsiElement;
 
 public interface WingInitializer extends WingElement {
 
-  @NotNull
+  @Nullable
   WingBlockStatement getBlockStatement();
 
-  @NotNull
+  @Nullable
+  WingExpression getExpression();
+
+  @Nullable
   WingParameterList getParameterList();
 
 }

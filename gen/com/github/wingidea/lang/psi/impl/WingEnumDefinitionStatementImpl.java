@@ -27,6 +27,12 @@ public class WingEnumDefinitionStatementImpl extends WingElementImpl implements 
   }
 
   @Override
+  @Nullable
+  public WingAccessModifier getAccessModifier() {
+    return findChildByClass(WingAccessModifier.class);
+  }
+
+  @Override
   @NotNull
   public List<WingEnumField> getEnumFieldList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, WingEnumField.class);

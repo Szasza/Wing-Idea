@@ -27,15 +27,15 @@ public class WingInflightMethodSignatureImpl extends WingElementImpl implements 
   }
 
   @Override
-  @NotNull
+  @Nullable
   public WingParameterList getParameterList() {
-    return findNotNullChildByClass(WingParameterList.class);
+    return findChildByClass(WingParameterList.class);
   }
 
   @Override
-  @NotNull
+  @Nullable
   public WingTypeAnnotation getTypeAnnotation() {
-    return findNotNullChildByClass(WingTypeAnnotation.class);
+    return findChildByClass(WingTypeAnnotation.class);
   }
 
   @Override

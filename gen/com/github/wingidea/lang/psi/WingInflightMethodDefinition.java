@@ -22,7 +22,7 @@ public interface WingInflightMethodDefinition extends WingElement {
   @Nullable
   WingTypeAnnotation getTypeAnnotation();
 
-  @Nullable
+  @NotNull
   PsiElement getIdentifier();
 
 }

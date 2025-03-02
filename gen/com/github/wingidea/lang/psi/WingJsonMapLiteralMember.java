@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface WingJsonMapLiteralMember extends WingElement {
 
-  @NotNull
+  @Nullable
   WingExpression getExpression();
 
   @Nullable

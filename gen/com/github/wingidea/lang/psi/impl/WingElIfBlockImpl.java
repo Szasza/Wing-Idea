@@ -38,4 +38,10 @@ public class WingElIfBlockImpl extends WingElementImpl implements WingElIfBlock 
     return findNotNullChildByClass(WingExpression.class);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getIdentifier() {
+    return findChildByType(IDENTIFIER);
+  }
+
 }

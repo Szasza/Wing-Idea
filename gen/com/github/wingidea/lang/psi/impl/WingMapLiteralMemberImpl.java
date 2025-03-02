@@ -28,14 +28,8 @@ public class WingMapLiteralMemberImpl extends WingElementImpl implements WingMap
 
   @Override
   @NotNull
-  public WingExpression getExpression() {
-    return findNotNullChildByClass(WingExpression.class);
-  }
-
-  @Override
-  @NotNull
-  public WingString getString() {
-    return findNotNullChildByClass(WingString.class);
+  public List<WingExpression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingExpression.class);
   }
 
 }

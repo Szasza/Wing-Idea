@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 public interface WingInflightClosureExpression extends WingExpression {
 
   @NotNull
-  WingBlockStatement getBlockStatement();
+  WingArgumentList getArgumentList();
 
   @NotNull
-  WingParameterList getParameterList();
+  WingBlockStatement getBlockStatement();
 
   @Nullable
   WingTypeAnnotation getTypeAnnotation();

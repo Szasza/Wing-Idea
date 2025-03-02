@@ -70,8 +70,6 @@ public interface WingElementTypes {
   IElementType PREFLIGHT_CLOSURE_EXPRESSION = new WingElementType("PREFLIGHT_CLOSURE_EXPRESSION");
   IElementType REFERENCE_EXPRESSION = new WingElementType("REFERENCE_EXPRESSION");
   IElementType RELATIONAL_OPERATORS = new WingElementType("RELATIONAL_OPERATORS");
-  IElementType RESOURCE_DEFINITION_STATEMENT = new WingElementType("RESOURCE_DEFINITION_STATEMENT");
-  IElementType RESOURCE_IMPLEMENTATION = new WingElementType("RESOURCE_IMPLEMENTATION");
   IElementType RETURN_STATEMENT = new WingElementType("RETURN_STATEMENT");
   IElementType SET_LITERAL_EXPRESSION = new WingElementType("SET_LITERAL_EXPRESSION");
   IElementType STRING = new WingElementType("STRING");
@@ -83,6 +81,7 @@ public interface WingElementTypes {
   IElementType SUPER_CALL_EXPRESSION = new WingElementType("SUPER_CALL_EXPRESSION");
   IElementType SUPER_CONSTRUCTOR_STATEMENT = new WingElementType("SUPER_CONSTRUCTOR_STATEMENT");
   IElementType TEST_STATEMENT = new WingElementType("TEST_STATEMENT");
+  IElementType THROW_STATEMENT = new WingElementType("THROW_STATEMENT");
   IElementType TRY_CATCH_STATEMENT = new WingElementType("TRY_CATCH_STATEMENT");
   IElementType TYPE = new WingElementType("TYPE");
   IElementType TYPE_ANNOTATION = new WingElementType("TYPE_ANNOTATION");
@@ -130,6 +129,7 @@ public interface WingElementTypes {
   IElementType INFLIGHT_SPECIFIER = new WingTokenType("inflight");
   IElementType INTEGER = new WingTokenType("INTEGER");
   IElementType INTERFACE = new WingTokenType("interface");
+  IElementType INTERNAL = new WingTokenType("internal");
   IElementType LEFT_CURLY_BRACE = new WingTokenType("{");
   IElementType LEFT_PARENTHESIS = new WingTokenType("(");
   IElementType LEFT_SQUARE_BRACE = new WingTokenType("[");
@@ -139,7 +139,6 @@ public interface WingElementTypes {
   IElementType MODULO = new WingTokenType("%");
   IElementType MULTIPLY = new WingTokenType("*");
   IElementType MULTI_LINE_COMMENT = new WingTokenType("MULTI_LINE_COMMENT");
-  IElementType NB = new WingTokenType("nb");
   IElementType NEW = new WingTokenType("new");
   IElementType NIL = new WingTokenType("nil");
   IElementType NOT = new WingTokenType("!");
@@ -160,6 +159,7 @@ public interface WingElementTypes {
   IElementType SUBTRACTION = new WingTokenType("-");
   IElementType SUPER = new WingTokenType("super");
   IElementType TEST = new WingTokenType("test");
+  IElementType THROW = new WingTokenType("throw");
   IElementType TRY = new WingTokenType("try");
   IElementType UNWRAP_OR = new WingTokenType("??");
   IElementType VAR = new WingTokenType("var");
@@ -348,12 +348,6 @@ public interface WingElementTypes {
       else if (type == RELATIONAL_OPERATORS) {
         return new WingRelationalOperatorsImpl(node);
       }
-      else if (type == RESOURCE_DEFINITION_STATEMENT) {
-        return new WingResourceDefinitionStatementImpl(node);
-      }
-      else if (type == RESOURCE_IMPLEMENTATION) {
-        return new WingResourceImplementationImpl(node);
-      }
       else if (type == RETURN_STATEMENT) {
         return new WingReturnStatementImpl(node);
       }
@@ -386,6 +380,9 @@ public interface WingElementTypes {
       }
       else if (type == TEST_STATEMENT) {
         return new WingTestStatementImpl(node);
+      }
+      else if (type == THROW_STATEMENT) {
+        return new WingThrowStatementImpl(node);
       }
       else if (type == TRY_CATCH_STATEMENT) {
         return new WingTryCatchStatementImpl(node);

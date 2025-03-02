@@ -145,7 +145,7 @@ intellijPlatform {
             select {
                 types = listOf(IntelliJPlatformType.IntellijIdeaUltimate)
                 sinceBuild = "241"
-                untilBuild = "241.*"
+                untilBuild = "251.*"
             }
         }
     }
