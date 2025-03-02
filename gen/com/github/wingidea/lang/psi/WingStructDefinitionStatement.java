@@ -7,6 +7,9 @@ import com.intellij.psi.PsiElement;
 
 public interface WingStructDefinitionStatement extends WingElement {
 
+  @Nullable
+  WingAccessModifier getAccessModifier();
+
   @NotNull
   List<WingStructField> getStructFieldList();
 

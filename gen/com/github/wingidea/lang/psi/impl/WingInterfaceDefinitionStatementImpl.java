@@ -28,6 +28,12 @@ public class WingInterfaceDefinitionStatementImpl extends WingElementImpl implem
 
   @Override
   @Nullable
+  public WingAccessModifier getAccessModifier() {
+    return findChildByClass(WingAccessModifier.class);
+  }
+
+  @Override
+  @Nullable
   public WingInterfaceImplementation getInterfaceImplementation() {
     return findChildByClass(WingInterfaceImplementation.class);
   }

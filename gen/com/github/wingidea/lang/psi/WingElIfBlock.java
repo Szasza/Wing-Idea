@@ -13,4 +13,7 @@ public interface WingElIfBlock extends WingElement {
   @NotNull
   WingExpression getExpression();
 
+  @Nullable
+  PsiElement getIdentifier();
+
 }

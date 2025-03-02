@@ -29,14 +29,14 @@ public class WingInflightClosureExpressionImpl extends WingExpressionImpl implem
 
   @Override
   @NotNull
-  public WingBlockStatement getBlockStatement() {
-    return findNotNullChildByClass(WingBlockStatement.class);
+  public WingArgumentList getArgumentList() {
+    return findNotNullChildByClass(WingArgumentList.class);
   }
 
   @Override
   @NotNull
-  public WingParameterList getParameterList() {
-    return findNotNullChildByClass(WingParameterList.class);
+  public WingBlockStatement getBlockStatement() {
+    return findNotNullChildByClass(WingBlockStatement.class);
   }
 
   @Override

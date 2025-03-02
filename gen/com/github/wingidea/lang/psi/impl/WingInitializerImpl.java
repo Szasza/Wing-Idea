@@ -27,15 +27,21 @@ public class WingInitializerImpl extends WingElementImpl implements WingInitiali
   }
 
   @Override
-  @NotNull
+  @Nullable
   public WingBlockStatement getBlockStatement() {
-    return findNotNullChildByClass(WingBlockStatement.class);
+    return findChildByClass(WingBlockStatement.class);
   }
 
   @Override
-  @NotNull
+  @Nullable
+  public WingExpression getExpression() {
+    return findChildByClass(WingExpression.class);
+  }
+
+  @Override
+  @Nullable
   public WingParameterList getParameterList() {
-    return findNotNullChildByClass(WingParameterList.class);
+    return findChildByClass(WingParameterList.class);
   }
 
 }

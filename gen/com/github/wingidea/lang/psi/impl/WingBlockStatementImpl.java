@@ -88,12 +88,6 @@ public class WingBlockStatementImpl extends WingElementImpl implements WingBlock
 
   @Override
   @NotNull
-  public List<WingResourceDefinitionStatement> getResourceDefinitionStatementList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingResourceDefinitionStatement.class);
-  }
-
-  @Override
-  @NotNull
   public List<WingReturnStatement> getReturnStatementList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, WingReturnStatement.class);
   }
@@ -114,6 +108,12 @@ public class WingBlockStatementImpl extends WingElementImpl implements WingBlock
   @NotNull
   public List<WingTestStatement> getTestStatementList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, WingTestStatement.class);
+  }
+
+  @Override
+  @NotNull
+  public List<WingThrowStatement> getThrowStatementList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingThrowStatement.class);
   }
 
   @Override

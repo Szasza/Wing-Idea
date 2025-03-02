@@ -27,9 +27,9 @@ public class WingJsonMapLiteralMemberImpl extends WingElementImpl implements Win
   }
 
   @Override
-  @NotNull
+  @Nullable
   public WingExpression getExpression() {
-    return findNotNullChildByClass(WingExpression.class);
+    return findChildByClass(WingExpression.class);
   }
 
   @Override

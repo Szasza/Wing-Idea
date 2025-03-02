@@ -97,8 +97,13 @@ WHITE_SPACE=[ \t\n\x0B\f\r]+
   "=>"                      { return ARROW; }
   "super"                   { return SUPER; }
   "?"                       { return QUESTION_MARK; }
+  "extern"                  { return EXTERN; }
   "await"                   { return AWAIT; }
   "defer"                   { return DEFER; }
+  "pub"                     { return PUBLIC; }
+  "protected"               { return PROTECTED; }
+  "throw"                   { return THROW; }
+  "internal"                { return INTERNAL; }
 
   {BOOL}                    { return BOOL; }
   {INTEGER}                 { return INTEGER; }

@@ -27,6 +27,12 @@ public class WingStructDefinitionStatementImpl extends WingElementImpl implement
   }
 
   @Override
+  @Nullable
+  public WingAccessModifier getAccessModifier() {
+    return findChildByClass(WingAccessModifier.class);
+  }
+
+  @Override
   @NotNull
   public List<WingStructField> getStructFieldList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, WingStructField.class);

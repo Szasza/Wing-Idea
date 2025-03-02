@@ -254,14 +254,6 @@ public class WingVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitResourceDefinitionStatement(@NotNull WingResourceDefinitionStatement o) {
-    visitElement(o);
-  }
-
-  public void visitResourceImplementation(@NotNull WingResourceImplementation o) {
-    visitElement(o);
-  }
-
   public void visitReturnStatement(@NotNull WingReturnStatement o) {
     visitElement(o);
   }
@@ -303,6 +295,10 @@ public class WingVisitor extends PsiElementVisitor {
   }
 
   public void visitTestStatement(@NotNull WingTestStatement o) {
+    visitElement(o);
+  }
+
+  public void visitThrowStatement(@NotNull WingThrowStatement o) {
     visitElement(o);
   }
 

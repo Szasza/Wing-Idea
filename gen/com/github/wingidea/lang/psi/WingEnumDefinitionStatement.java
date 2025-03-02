@@ -7,6 +7,9 @@ import com.intellij.psi.PsiElement;
 
 public interface WingEnumDefinitionStatement extends WingElement {
 
+  @Nullable
+  WingAccessModifier getAccessModifier();
+
   @NotNull
   List<WingEnumField> getEnumFieldList();
 

@@ -38,9 +38,6 @@ public interface WingBlockStatement extends WingElement {
   List<WingInterfaceDefinitionStatement> getInterfaceDefinitionStatementList();
 
   @NotNull
-  List<WingResourceDefinitionStatement> getResourceDefinitionStatementList();
-
-  @NotNull
   List<WingReturnStatement> getReturnStatementList();
 
   @NotNull
@@ -51,6 +48,9 @@ public interface WingBlockStatement extends WingElement {
 
   @NotNull
   List<WingTestStatement> getTestStatementList();
+
+  @NotNull
+  List<WingThrowStatement> getThrowStatementList();
 
   @NotNull
   List<WingTryCatchStatement> getTryCatchStatementList();

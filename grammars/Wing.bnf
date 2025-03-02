@@ -92,6 +92,8 @@
     DEFER = 'defer'
     PUBLIC = 'pub'
     PROTECTED = 'protected'
+    THROW = 'throw'
+    INTERNAL = 'internal'
     MULTI_LINE_COMMENT = 'regexp:/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/'
     STRING_LITERAL  = 'regexp:\"([^\\\"\r\n]|\\[^\r\n])*\"?'
     IDENTIFIER = 'regexp:[A-Za-z_$][A-Za-z_$0-9]*|[A-Z][A-Z0-9_]*'
@@ -106,6 +108,9 @@ Schema ::= Statement*
 private Statement ::=
     ImportStatementBlock
     | TestStatement
+    | VariableAssignmentStatement
+    | VariableDefinitionStatement
+    | ReturnStatement
     | ExpressionStatement
     | ForInLoopStatement
     | IfStatement
@@ -113,16 +118,13 @@ private Statement ::=
     | ContinueStatement
     | WhileStatement
     | ClassDefinitionStatement
-    | VariableAssignmentStatement
-    | VariableDefinitionStatement
-    | ResourceDefinitionStatement
-    | ReturnStatement
     | InterfaceDefinitionStatement
     | StructDefinitionStatement
     | EnumDefinitionStatement
     | IfLetStatement
     | TryCatchStatement
     | SuperConstructorStatement
+    | ThrowStatement
 
 ImportStatementBlock ::=
     ImportStatement ImportStatement*
@@ -130,7 +132,7 @@ ImportStatementBlock ::=
 ImportStatement ::=
     BRING IDENTIFIER SEMICOLON
     | BRING IDENTIFIER ALIAS IDENTIFIER SEMICOLON
-    | BRING STRING_LITERAL ALIAS IDENTIFIER SEMICOLON {pin=1}
+    | BRING STRING_LITERAL ALIAS IDENTIFIER SEMICOLON {pin="BRING"}
 
 TestStatement ::=
     TEST String BlockStatement
@@ -210,7 +212,7 @@ Type ::=
     | FieldType
 
 private FieldType ::=
-    BuiltInType nb
+    BuiltInType
     | BuiltInContainerType
     | FunctionType
     | CustomType
@@ -256,13 +258,13 @@ ContainerValueType ::=
 TypeAnnotation ::=
     COLON Type
 
- FunctionType ::=
+FunctionType ::=
     INFLIGHT_SPECIFIER? ParameterTypeList [COLON Type]
 
- ParameterTypeList ::=
+ParameterTypeList ::=
     LEFT_PARENTHESIS [Type (COMMA Type)* COMMA?] RIGHT_PARENTHESIS
 
- LiteralExpression ::=
+LiteralExpression ::=
     String
     | BOOL
     | Duration
@@ -293,7 +295,7 @@ IfStatement ::=
     IF Expression BlockStatement ElIfBlock* (ELSE BlockStatement)?
 
 ElIfBlock ::=
-    ELIF Expression BlockStatement
+    (ELIF | ELSE IF) (Expression BlockStatement | LET IDENTIFIER ASSIGNMENT Expression BlockStatement)
 
 BreakStatement ::=
     BREAK SEMICOLON
@@ -305,13 +307,14 @@ WhileStatement ::=
     WHILE Expression BlockStatement
 
 ClassDefinitionStatement ::=
-    INFLIGHT_SPECIFIER? CLASS IDENTIFIER (EXTENDS CustomType)? (IMPLEMENTS CustomType (COMMA CustomType)*)? ClassImplementation {pin=2}
+    PUBLIC? INFLIGHT_SPECIFIER? CLASS IDENTIFIER (EXTENDS CustomType)? (IMPLEMENTS CustomType (COMMA CustomType)*)? ClassImplementation
 
 ClassImplementation ::=
-    LEFT_CURLY_BRACE (Initializer | ClassField | MethodDefinition | InflightMethodDefinition )* RIGHT_CURLY_BRACE {pin=1}
+    LEFT_CURLY_BRACE (Initializer | ClassField | MethodDefinition | InflightMethodDefinition)* RIGHT_CURLY_BRACE
 
 Initializer ::=
     INFLIGHT_SPECIFIER? NEW ParameterList BlockStatement
+    | INFLIGHT_SPECIFIER? NEW Expression {pin="NEW"}
 
 ParameterList ::=
     LEFT_PARENTHESIS [ParameterDefinition (COMMA ParameterDefinition)* COMMA?] RIGHT_PARENTHESIS
@@ -320,10 +323,10 @@ ParameterDefinition ::=
     VAR? IDENTIFIER TypeAnnotation
 
 MethodDefinition ::=
-    ExternModifier? AccessModifier? static? 'async'? IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON) {pin=5}
+    AccessModifier? ExternModifier? STATIC? 'async'? IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON) {pin="IDENTIFIER"}
 
 InflightMethodDefinition ::=
-    ExternModifier? AccessModifier? static? INFLIGHT_SPECIFIER IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON) {pin=5}
+    AccessModifier? ExternModifier? (INFLIGHT_SPECIFIER STATIC? | STATIC? INFLIGHT_SPECIFIER) IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON)  {pin="IDENTIFIER"}
 
 ExternModifier ::=
     EXTERN String
@@ -334,16 +337,13 @@ ClassField ::=
 AccessModifier ::=
     PUBLIC
     | PROTECTED
+    | INTERNAL
 
 VariableAssignmentStatement ::=
-    ReferenceExpression ASSIGNMENT Expression SEMICOLON
-    | StructuredAccessExpression ASSIGNMENT Expression SEMICOLON
-    | NestedIdentifierExpression ASSIGNMENT Expression SEMICOLON
-    | NestedIdentifierJsonExpression ASSIGNMENT Expression SEMICOLON
+    (ReferenceExpression | StructuredAccessExpression | NestedIdentifierExpression | NestedIdentifierJsonExpression) ASSIGNMENT Expression SEMICOLON
 
 ReferenceExpression ::=
-    IDENTIFIER (Accessor IDENTIFIER)*
-    | IDENTIFIER
+    IDENTIFIER ArgumentList? (Accessor IDENTIFIER ArgumentList?)*
 
 NestedIdentifierExpression ::=
     Expression Accessor IDENTIFIER?
@@ -358,17 +358,11 @@ Accessor ::=
     DOT
     | '?.'
 
-ResourceDefinitionStatement ::=
-    CLASS IDENTIFIER (EXTENDS CustomType)? (IMPLEMENTS CustomType (COMMA CustomType)*)?  ResourceImplementation {pin=1}
-
-ResourceImplementation ::=
-    LEFT_CURLY_BRACE (Initializer | ClassField | MethodDefinition | InflightMethodDefinition )* RIGHT_CURLY_BRACE {pin=1}
-
 ReturnStatement ::=
     RETURN Expression SEMICOLON
 
 InterfaceDefinitionStatement ::=
-    INFLIGHT_SPECIFIER? INTERFACE IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? InterfaceImplementation {pin=2}
+    AccessModifier? INFLIGHT_SPECIFIER? INTERFACE IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? InterfaceImplementation {pin=3}
 
 InterfaceImplementation ::=
     LEFT_CURLY_BRACE (MethodSignature | InflightMethodSignature | ClassField )* RIGHT_CURLY_BRACE {pin=1}
@@ -380,7 +374,7 @@ InflightMethodSignature ::=
     INFLIGHT_SPECIFIER IDENTIFIER ParameterList TypeAnnotation SEMICOLON {pin=2}
 
 StructDefinitionStatement ::=
-    STRUCT IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? StructImplementation {pin=1}
+    AccessModifier? STRUCT IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? StructImplementation {pin=2}
 
 private StructImplementation ::=
     LEFT_CURLY_BRACE StructField* RIGHT_CURLY_BRACE {pin=1}
@@ -398,7 +392,7 @@ PreflightClosureExpression ::=
     ParameterList TypeAnnotation? ARROW BlockStatement
 
 InflightClosureExpression ::=
-    INFLIGHT_SPECIFIER ParameterList TypeAnnotation? ARROW BlockStatement
+    INFLIGHT_SPECIFIER ArgumentList TypeAnnotation? ARROW BlockStatement
 
 CallExpression ::=
     Expression ArgumentList
@@ -411,6 +405,7 @@ ArgumentList ::=
 
 Argument ::=
     IDENTIFIER COLON Expression
+    | ReferenceExpression
     | Expression
 
 CollectionLiteralExpression ::=
@@ -422,13 +417,13 @@ ArrayLiteralExpression ::=
     BuiltInContainerType? LEFT_SQUARE_BRACE (Expression (COMMA Expression)* COMMA?)? RIGHT_SQUARE_BRACE
 
 SetLiteralExpression ::=
-    BuiltInContainerType? LEFT_CURLY_BRACE( Expression (COMMA Expression)* COMMA?)? RIGHT_CURLY_BRACE
+    BuiltInContainerType? LEFT_CURLY_BRACE (Expression (COMMA Expression)* COMMA?)? RIGHT_CURLY_BRACE
 
 MapLiteralExpression ::=
     BuiltInContainerType? LEFT_CURLY_BRACE MapLiteralMember (COMMA MapLiteralMember)* COMMA? RIGHT_CURLY_BRACE
 
 MapLiteralMember ::=
-    String ARROW Expression
+    Expression ARROW Expression
 
 NewExpression ::=
     NEW (CustomType | MutableContainerType) ArgumentList (ALIAS Expression)? (IN Expression)?
@@ -442,6 +437,7 @@ JsonMapLiteral ::=
 
 JsonMapLiteralMember ::=
     (String | IDENTIFIER) COLON Expression
+    | IDENTIFIER
 
 AwaitExpression ::=
     AWAIT Expression
@@ -456,7 +452,7 @@ OptionalTestExpression ::=
     Expression QUESTION_MARK
 
 EnumDefinitionStatement ::=
-    ENUM IDENTIFIER LEFT_CURLY_BRACE (EnumField (COMMA EnumField)* COMMA?)? RIGHT_CURLY_BRACE
+    AccessModifier? ENUM IDENTIFIER LEFT_CURLY_BRACE (EnumField (COMMA EnumField)* COMMA?)? RIGHT_CURLY_BRACE
 
 EnumField ::=
     IDENTIFIER
@@ -475,6 +471,9 @@ FinallyBlock ::=
 
 SuperConstructorStatement ::=
     SUPER ArgumentList SEMICOLON
+
+ThrowStatement ::=
+    THROW Expression SEMICOLON
 
 // TODO: Missing support for template substitution
 /*

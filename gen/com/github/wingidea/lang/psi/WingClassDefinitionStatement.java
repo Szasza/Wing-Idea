@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface WingClassDefinitionStatement extends WingElement {
 
-  @Nullable
+  @NotNull
   WingClassImplementation getClassImplementation();
 
 }

@@ -10,4 +10,7 @@ public interface WingReferenceExpression extends WingExpression {
   @NotNull
   List<WingAccessor> getAccessorList();
 
+  @NotNull
+  List<WingArgumentList> getArgumentListList();
+
 }
