@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Plugged in the Wing language server
+- Updated the language reference
+- Updated JFlex to 1.9.2
+
 ## [0.2.0] - 2025-02-04
 
 ### Changed
