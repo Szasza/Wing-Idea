@@ -7,6 +7,7 @@ import com.intellij.javascript.nodejs.interpreter.local.NodeJsLocalInterpreter
 import com.intellij.javascript.nodejs.interpreter.wsl.WslNodeInterpreter
 import com.intellij.javascript.nodejs.npm.NpmManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.SystemInfo
 
 
 /**
@@ -26,8 +27,19 @@ class WingCommandLine {
 
             val npmPath = NpmManager.getInstance(project).getPackage(interpreter)!!.systemDependentPath
             val nodeBinPath = npmPath.replaceAfterLast("/", "").replaceAfterLast("\\", "").trimEnd('/','\\')
-            val cmdLine = GeneralCommandLine("wing")
+            val cmdLine = GeneralCommandLine("")
             val envPath = cmdLine.parentEnvironment["PATH"]
+
+            val wingExecutable =
+                if (SystemInfo.isWindows) {
+                    if (cmdLine.parentEnvironment.containsKey("PROMPT")) {
+                        "wing.cmd"
+                    } else {
+                        "wing.ps1"
+                    }
+                } else {
+                    "wing"
+                }
 
             return cmdLine.apply {
                 withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
@@ -35,6 +47,7 @@ class WingCommandLine {
                 withEnvironment("PATH", "$envPath:$nodeBinPath")
                 withCharset(Charsets.UTF_8)
                 withWorkDirectory(project.basePath)
+                withExePath(wingExecutable)
                 addParameters(*commands)
             }
         }
