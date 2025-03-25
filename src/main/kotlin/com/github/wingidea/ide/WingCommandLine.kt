@@ -28,13 +28,16 @@ class WingCommandLine {
             val npmPath = NpmManager.getInstance(project).getPackage(interpreter)!!.systemDependentPath
             val cmdLine = GeneralCommandLine("")
             val nodeModuleBinPath: String
+            val pathEnvVarSeparator: String
 
             val wingExecutable =
                 if (SystemInfo.isWindows) {
                     nodeModuleBinPath = getWindowsNodeModuleBinPath(npmPath)
+                    pathEnvVarSeparator = ";"
                     getWindowsExecutable(nodeModuleBinPath)
                 } else {
                     nodeModuleBinPath = npmPath.replaceAfterLast("/", "").replaceAfterLast("\\", "").trimEnd('/','\\')
+                    pathEnvVarSeparator = ":"
                     "wing"
                 }
             val envPath = cmdLine.parentEnvironment["PATH"]
@@ -42,7 +45,7 @@ class WingCommandLine {
             return cmdLine.apply {
                 withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
                 withEnvironment(parentEnvironment)
-                withEnvironment("PATH", "$envPath:$nodeModuleBinPath")
+                withEnvironment("PATH", "$envPath$pathEnvVarSeparator$nodeModuleBinPath")
                 withCharset(Charsets.UTF_8)
                 withWorkDirectory(project.basePath)
                 withExePath(wingExecutable)
