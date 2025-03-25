@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Windows Wing binary handling
+- KotlinX coroutines exclusion
+
 ## [0.3.0] - 2025-03-02
 
 ### Changed
