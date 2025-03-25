@@ -37,18 +37,17 @@ class WingCommandLine {
                     nodeModuleBinPath = npmPath.replaceAfterLast("/", "").replaceAfterLast("\\", "").trimEnd('/','\\')
                     "wing"
                 }
+            val envPath = cmdLine.parentEnvironment["PATH"]
 
-            val cmd = cmdLine.apply {
+            return cmdLine.apply {
                 withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
                 withEnvironment(parentEnvironment)
-                // TODO we need to check if Wing is on the path
+                withEnvironment("PATH", "$envPath:$nodeModuleBinPath")
                 withCharset(Charsets.UTF_8)
                 withWorkDirectory(project.basePath)
-                withExePath("$nodeModuleBinPath\\$wingExecutable")
+                withExePath(wingExecutable)
                 addParameters(*commands)
             }
-
-            return cmd
         }
 
         private fun getWindowsNodeModuleBinPath(npmPath: String): String {

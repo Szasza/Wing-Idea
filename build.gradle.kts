@@ -39,9 +39,11 @@ repositories {
     }
 }
 
-configurations.all {
-    exclude("org.slf4j", "slf4j-api")
-    exclude("org.jetbrains.kotlinx:kotlinx-coroutines")
+configurations {
+    "implementation" {
+        exclude(group = "org.slf4j", module = "slf4j-api")
+        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines")
+    }
 }
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
