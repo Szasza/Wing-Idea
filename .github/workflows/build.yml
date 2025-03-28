@@ -64,8 +64,6 @@ jobs:
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-          ./gradlew printProductsReleases > build/listProductsReleases.txt # prepare list of IDEs for Plugin Verifier
-
       # Build plugin
       - name: Build plugin
         run: ./gradlew buildPlugin
@@ -177,6 +175,12 @@ jobs:
       # Setup Gradle
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      # Generate product release list
+      - name: Generate product release list
+        shell: bash
+        run: |
+          ./gradlew printProductsReleases > build/listProductsReleases.txt
 
       # Cache Plugin Verifier IDEs
       - name: Setup Plugin Verifier IDEs Cache
