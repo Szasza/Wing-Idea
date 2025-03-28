@@ -180,6 +180,7 @@ jobs:
       - name: Generate product release list
         shell: bash
         run: |
+          mkdir build
           ./gradlew printProductsReleases > build/listProductsReleases.txt
 
       # Cache Plugin Verifier IDEs
