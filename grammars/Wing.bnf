@@ -137,9 +137,9 @@ PhaseSpecifier ::=
 private Statement ::=
     TestStatement
     | ImportStatementBlock
-    | VariableAssignmentStatement
     | ExpressionStatement
     | VariableDefinitionStatement
+    | VariableAssignmentStatement
     | ReturnStatement
     | ClassDefinitionStatement
     | InterfaceDefinitionStatement
