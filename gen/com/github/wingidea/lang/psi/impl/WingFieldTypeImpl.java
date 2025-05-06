@@ -10,15 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.wingidea.lang.psi.WingElementTypes.*;
 import com.github.wingidea.lang.psi.*;
 
-public class WingOptionalTestExpressionImpl extends WingExpressionImpl implements WingOptionalTestExpression {
+public class WingFieldTypeImpl extends WingElementImpl implements WingFieldType {
 
-  public WingOptionalTestExpressionImpl(@NotNull ASTNode node) {
+  public WingFieldTypeImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull WingVisitor visitor) {
-    visitor.visitOptionalTestExpression(this);
+    visitor.visitFieldType(this);
   }
 
   @Override
@@ -28,9 +27,21 @@ public class WingOptionalTestExpressionImpl extends WingExpressionImpl implement
   }
 
   @Override
-  @NotNull
-  public WingExpression getExpression() {
-    return findNotNullChildByClass(WingExpression.class);
+  @Nullable
+  public WingContainerValueType getContainerValueType() {
+    return findChildByClass(WingContainerValueType.class);
+  }
+
+  @Override
+  @Nullable
+  public WingFunctionType getFunctionType() {
+    return findChildByClass(WingFunctionType.class);
+  }
+
+  @Override
+  @Nullable
+  public WingParenthesizedType getParenthesizedType() {
+    return findChildByClass(WingParenthesizedType.class);
   }
 
 }

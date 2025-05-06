@@ -34,6 +34,12 @@ public class WingCatchBlockImpl extends WingElementImpl implements WingCatchBloc
 
   @Override
   @Nullable
+  public WingParenthesizedIdentifier getParenthesizedIdentifier() {
+    return findChildByClass(WingParenthesizedIdentifier.class);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getIdentifier() {
     return findChildByType(IDENTIFIER);
   }

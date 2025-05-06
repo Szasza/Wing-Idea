@@ -5,13 +5,13 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface WingInflightMethodSignature extends WingElement {
+public interface WingElIfLetBlock extends WingElement {
 
-  @Nullable
-  WingParameterList getParameterList();
+  @NotNull
+  WingBlockStatement getBlockStatement();
 
-  @Nullable
-  WingTypeAnnotation getTypeAnnotation();
+  @NotNull
+  WingExpression getExpression();
 
   @NotNull
   PsiElement getIdentifier();

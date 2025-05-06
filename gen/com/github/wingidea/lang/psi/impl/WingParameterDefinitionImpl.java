@@ -27,9 +27,9 @@ public class WingParameterDefinitionImpl extends WingElementImpl implements Wing
   }
 
   @Override
-  @NotNull
+  @Nullable
   public WingTypeAnnotation getTypeAnnotation() {
-    return findNotNullChildByClass(WingTypeAnnotation.class);
+    return findChildByClass(WingTypeAnnotation.class);
   }
 
   @Override

@@ -14,6 +14,9 @@ public interface WingIfLetStatement extends WingElement {
   List<WingElIfBlock> getElIfBlockList();
 
   @NotNull
+  List<WingElIfLetBlock> getElIfLetBlockList();
+
+  @NotNull
   WingExpression getExpression();
 
   @NotNull

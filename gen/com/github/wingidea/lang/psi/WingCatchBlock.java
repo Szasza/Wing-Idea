@@ -11,6 +11,9 @@ public interface WingCatchBlock extends WingElement {
   WingBlockStatement getBlockStatement();
 
   @Nullable
+  WingParenthesizedIdentifier getParenthesizedIdentifier();
+
+  @Nullable
   PsiElement getIdentifier();
 
 }

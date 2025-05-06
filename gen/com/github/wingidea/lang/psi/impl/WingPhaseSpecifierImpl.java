@@ -10,38 +10,20 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.wingidea.lang.psi.WingElementTypes.*;
 import com.github.wingidea.lang.psi.*;
 
-public class WingInflightMethodSignatureImpl extends WingElementImpl implements WingInflightMethodSignature {
+public class WingPhaseSpecifierImpl extends WingElementImpl implements WingPhaseSpecifier {
 
-  public WingInflightMethodSignatureImpl(@NotNull ASTNode node) {
+  public WingPhaseSpecifierImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull WingVisitor visitor) {
-    visitor.visitInflightMethodSignature(this);
+    visitor.visitPhaseSpecifier(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof WingVisitor) accept((WingVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public WingParameterList getParameterList() {
-    return findChildByClass(WingParameterList.class);
-  }
-
-  @Override
-  @Nullable
-  public WingTypeAnnotation getTypeAnnotation() {
-    return findChildByClass(WingTypeAnnotation.class);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getIdentifier() {
-    return findNotNullChildByType(IDENTIFIER);
   }
 
 }

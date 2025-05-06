@@ -34,6 +34,12 @@ public class WingFunctionTypeImpl extends WingElementImpl implements WingFunctio
 
   @Override
   @Nullable
+  public WingPhaseSpecifier getPhaseSpecifier() {
+    return findChildByClass(WingPhaseSpecifier.class);
+  }
+
+  @Override
+  @Nullable
   public WingType getType() {
     return findChildByClass(WingType.class);
   }

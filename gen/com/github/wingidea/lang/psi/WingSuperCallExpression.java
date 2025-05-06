@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface WingSuperCallExpression extends WingExpression {
 
   @NotNull
-  WingArgumentList getArgumentList();
-
-  @NotNull
   PsiElement getIdentifier();
 
 }

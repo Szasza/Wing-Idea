@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface WingInterfaceDefinitionStatement extends WingElement {
 
   @Nullable
-  WingAccessModifier getAccessModifier();
+  WingInterfaceImplementation getInterfaceImplementation();
 
   @Nullable
-  WingInterfaceImplementation getInterfaceImplementation();
+  WingInterfaceModifiers getInterfaceModifiers();
 
 }

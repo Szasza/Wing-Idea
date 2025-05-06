@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface WingStructLiteralMember extends WingElement {
 
-  @NotNull
+  @Nullable
   WingExpression getExpression();
 
   @NotNull

@@ -29,12 +29,6 @@ public class WingSuperCallExpressionImpl extends WingExpressionImpl implements W
 
   @Override
   @NotNull
-  public WingArgumentList getArgumentList() {
-    return findNotNullChildByClass(WingArgumentList.class);
-  }
-
-  @Override
-  @NotNull
   public PsiElement getIdentifier() {
     return findNotNullChildByType(IDENTIFIER);
   }

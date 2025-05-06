@@ -10,15 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.wingidea.lang.psi.WingElementTypes.*;
 import com.github.wingidea.lang.psi.*;
 
-public class WingSetLiteralExpressionImpl extends WingExpressionImpl implements WingSetLiteralExpression {
+public class WingParenthesizedTypeImpl extends WingElementImpl implements WingParenthesizedType {
 
-  public WingSetLiteralExpressionImpl(@NotNull ASTNode node) {
+  public WingParenthesizedTypeImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull WingVisitor visitor) {
-    visitor.visitSetLiteralExpression(this);
+    visitor.visitParenthesizedType(this);
   }
 
   @Override
@@ -28,15 +27,9 @@ public class WingSetLiteralExpressionImpl extends WingExpressionImpl implements 
   }
 
   @Override
-  @Nullable
-  public WingContainerValueType getContainerValueType() {
-    return findChildByClass(WingContainerValueType.class);
-  }
-
-  @Override
   @NotNull
-  public List<WingExpression> getExpressionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingExpression.class);
+  public WingType getType() {
+    return findNotNullChildByClass(WingType.class);
   }
 
 }

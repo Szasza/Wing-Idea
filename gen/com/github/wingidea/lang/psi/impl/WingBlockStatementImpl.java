@@ -88,6 +88,12 @@ public class WingBlockStatementImpl extends WingElementImpl implements WingBlock
 
   @Override
   @NotNull
+  public List<WingLiftStatement> getLiftStatementList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingLiftStatement.class);
+  }
+
+  @Override
+  @NotNull
   public List<WingReturnStatement> getReturnStatementList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, WingReturnStatement.class);
   }

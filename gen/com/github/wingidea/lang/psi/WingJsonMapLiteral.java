@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface WingJsonMapLiteral extends WingElement {
 
   @NotNull
-  List<WingJsonMapLiteralMember> getJsonMapLiteralMemberList();
+  List<WingJsonLiteralMember> getJsonLiteralMemberList();
 
 }

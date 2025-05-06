@@ -39,9 +39,9 @@ public class WingEnumDefinitionStatementImpl extends WingElementImpl implements 
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiElement getIdentifier() {
-    return findNotNullChildByType(IDENTIFIER);
+    return findChildByType(IDENTIFIER);
   }
 
 }

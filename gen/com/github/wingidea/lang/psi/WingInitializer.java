@@ -11,9 +11,9 @@ public interface WingInitializer extends WingElement {
   WingBlockStatement getBlockStatement();
 
   @Nullable
-  WingExpression getExpression();
+  WingParameterList getParameterList();
 
   @Nullable
-  WingParameterList getParameterList();
+  WingPhaseSpecifier getPhaseSpecifier();
 
 }

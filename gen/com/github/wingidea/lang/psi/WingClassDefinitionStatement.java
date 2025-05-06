@@ -10,4 +10,7 @@ public interface WingClassDefinitionStatement extends WingElement {
   @NotNull
   WingClassImplementation getClassImplementation();
 
+  @NotNull
+  WingClassModifiers getClassModifiers();
+
 }

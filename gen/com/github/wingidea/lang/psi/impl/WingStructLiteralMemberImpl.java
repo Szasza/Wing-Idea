@@ -27,9 +27,9 @@ public class WingStructLiteralMemberImpl extends WingElementImpl implements Wing
   }
 
   @Override
-  @NotNull
+  @Nullable
   public WingExpression getExpression() {
-    return findNotNullChildByClass(WingExpression.class);
+    return findChildByClass(WingExpression.class);
   }
 
   @Override

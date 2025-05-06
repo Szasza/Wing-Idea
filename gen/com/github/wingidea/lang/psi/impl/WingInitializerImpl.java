@@ -34,14 +34,14 @@ public class WingInitializerImpl extends WingElementImpl implements WingInitiali
 
   @Override
   @Nullable
-  public WingExpression getExpression() {
-    return findChildByClass(WingExpression.class);
+  public WingParameterList getParameterList() {
+    return findChildByClass(WingParameterList.class);
   }
 
   @Override
   @Nullable
-  public WingParameterList getParameterList() {
-    return findChildByClass(WingParameterList.class);
+  public WingPhaseSpecifier getPhaseSpecifier() {
+    return findChildByClass(WingPhaseSpecifier.class);
   }
 
 }

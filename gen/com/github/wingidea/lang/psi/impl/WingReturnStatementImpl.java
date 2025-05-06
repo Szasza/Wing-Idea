@@ -27,9 +27,9 @@ public class WingReturnStatementImpl extends WingElementImpl implements WingRetu
   }
 
   @Override
-  @NotNull
+  @Nullable
   public WingExpression getExpression() {
-    return findNotNullChildByClass(WingExpression.class);
+    return findChildByClass(WingExpression.class);
   }
 
 }

@@ -11,9 +11,6 @@ public interface WingClassImplementation extends WingElement {
   List<WingClassField> getClassFieldList();
 
   @NotNull
-  List<WingInflightMethodDefinition> getInflightMethodDefinitionList();
-
-  @NotNull
   List<WingInitializer> getInitializerList();
 
   @NotNull

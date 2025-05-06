@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface WingParameterDefinition extends WingElement {
 
-  @NotNull
+  @Nullable
   WingTypeAnnotation getTypeAnnotation();
 
   @NotNull

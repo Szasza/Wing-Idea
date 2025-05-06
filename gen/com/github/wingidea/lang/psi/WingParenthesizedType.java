@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface WingNestedIdentifierJsonExpression extends WingExpression {
+public interface WingParenthesizedType extends WingElement {
 
   @NotNull
-  WingAccessor getAccessor();
-
-  @Nullable
-  PsiElement getIdentifier();
+  WingType getType();
 
 }

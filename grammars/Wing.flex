@@ -104,6 +104,7 @@ WHITE_SPACE=[ \t\n\x0B\f\r]+
   "protected"               { return PROTECTED; }
   "throw"                   { return THROW; }
   "internal"                { return INTERNAL; }
+  "lift"                    { return LIFT; }
 
   {BOOL}                    { return BOOL; }
   {INTEGER}                 { return INTEGER; }

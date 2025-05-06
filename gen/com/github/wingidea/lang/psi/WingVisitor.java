@@ -26,6 +26,10 @@ public class WingVisitor extends PsiElementVisitor {
     visitExpression(o);
   }
 
+  public void visitAssignmentOperator(@NotNull WingAssignmentOperator o) {
+    visitElement(o);
+  }
+
   public void visitAwaitExpression(@NotNull WingAwaitExpression o) {
     visitExpression(o);
   }
@@ -62,6 +66,18 @@ public class WingVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
+  public void visitClassModifiers(@NotNull WingClassModifiers o) {
+    visitElement(o);
+  }
+
+  public void visitClosureExpression(@NotNull WingClosureExpression o) {
+    visitExpression(o);
+  }
+
+  public void visitClosureModifier(@NotNull WingClosureModifier o) {
+    visitElement(o);
+  }
+
   public void visitCollectionLiteralExpression(@NotNull WingCollectionLiteralExpression o) {
     visitExpression(o);
   }
@@ -86,6 +102,10 @@ public class WingVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
+  public void visitElIfLetBlock(@NotNull WingElIfLetBlock o) {
+    visitElement(o);
+  }
+
   public void visitEnumDefinitionStatement(@NotNull WingEnumDefinitionStatement o) {
     visitElement(o);
   }
@@ -103,6 +123,14 @@ public class WingVisitor extends PsiElementVisitor {
   }
 
   public void visitExternModifier(@NotNull WingExternModifier o) {
+    visitElement(o);
+  }
+
+  public void visitFieldModifiers(@NotNull WingFieldModifiers o) {
+    visitElement(o);
+  }
+
+  public void visitFieldType(@NotNull WingFieldType o) {
     visitElement(o);
   }
 
@@ -134,15 +162,7 @@ public class WingVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitInflightClosureExpression(@NotNull WingInflightClosureExpression o) {
-    visitExpression(o);
-  }
-
-  public void visitInflightMethodDefinition(@NotNull WingInflightMethodDefinition o) {
-    visitElement(o);
-  }
-
-  public void visitInflightMethodSignature(@NotNull WingInflightMethodSignature o) {
+  public void visitInclusiveRange(@NotNull WingInclusiveRange o) {
     visitElement(o);
   }
 
@@ -158,15 +178,31 @@ public class WingVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
+  public void visitInterfaceModifiers(@NotNull WingInterfaceModifiers o) {
+    visitElement(o);
+  }
+
+  public void visitIntrinsicExpression(@NotNull WingIntrinsicExpression o) {
+    visitExpression(o);
+  }
+
   public void visitJsonLiteralExpression(@NotNull WingJsonLiteralExpression o) {
     visitExpression(o);
+  }
+
+  public void visitJsonLiteralMember(@NotNull WingJsonLiteralMember o) {
+    visitElement(o);
   }
 
   public void visitJsonMapLiteral(@NotNull WingJsonMapLiteral o) {
     visitElement(o);
   }
 
-  public void visitJsonMapLiteralMember(@NotNull WingJsonMapLiteralMember o) {
+  public void visitLiftQualification(@NotNull WingLiftQualification o) {
+    visitElement(o);
+  }
+
+  public void visitLiftStatement(@NotNull WingLiftStatement o) {
     visitElement(o);
   }
 
@@ -198,15 +234,11 @@ public class WingVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitMethodSignature(@NotNull WingMethodSignature o) {
+  public void visitMethodModifier(@NotNull WingMethodModifier o) {
     visitElement(o);
   }
 
   public void visitNestedIdentifierExpression(@NotNull WingNestedIdentifierExpression o) {
-    visitExpression(o);
-  }
-
-  public void visitNestedIdentifierJsonExpression(@NotNull WingNestedIdentifierJsonExpression o) {
     visitExpression(o);
   }
 
@@ -222,7 +254,7 @@ public class WingVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitOptionalTestExpression(@NotNull WingOptionalTestExpression o) {
+  public void visitOptionalUnwrapExpression(@NotNull WingOptionalUnwrapExpression o) {
     visitExpression(o);
   }
 
@@ -242,8 +274,16 @@ public class WingVisitor extends PsiElementVisitor {
     visitExpression(o);
   }
 
-  public void visitPreflightClosureExpression(@NotNull WingPreflightClosureExpression o) {
-    visitExpression(o);
+  public void visitParenthesizedIdentifier(@NotNull WingParenthesizedIdentifier o) {
+    visitElement(o);
+  }
+
+  public void visitParenthesizedType(@NotNull WingParenthesizedType o) {
+    visitElement(o);
+  }
+
+  public void visitPhaseSpecifier(@NotNull WingPhaseSpecifier o) {
+    visitElement(o);
   }
 
   public void visitReferenceExpression(@NotNull WingReferenceExpression o) {
@@ -258,8 +298,8 @@ public class WingVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitSetLiteralExpression(@NotNull WingSetLiteralExpression o) {
-    visitExpression(o);
+  public void visitReturnType(@NotNull WingReturnType o) {
+    visitElement(o);
   }
 
   public void visitString(@NotNull WingString o) {
@@ -312,6 +352,10 @@ public class WingVisitor extends PsiElementVisitor {
 
   public void visitTypeAnnotation(@NotNull WingTypeAnnotation o) {
     visitElement(o);
+  }
+
+  public void visitTypeIntrinsicExpression(@NotNull WingTypeIntrinsicExpression o) {
+    visitExpression(o);
   }
 
   public void visitUnaryExpression(@NotNull WingUnaryExpression o) {

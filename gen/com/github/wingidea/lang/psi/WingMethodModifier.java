@@ -5,15 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface WingJsonMapLiteralMember extends WingElement {
+public interface WingMethodModifier extends WingElement {
 
   @Nullable
-  WingExpression getExpression();
+  WingAccessModifier getAccessModifier();
 
   @Nullable
-  WingString getString();
+  WingExternModifier getExternModifier();
 
   @Nullable
-  PsiElement getIdentifier();
+  WingPhaseSpecifier getPhaseSpecifier();
 
 }

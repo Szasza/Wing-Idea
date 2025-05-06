@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface WingSetLiteralExpression extends WingExpression {
+public interface WingFieldModifiers extends WingElement {
 
   @Nullable
-  WingContainerValueType getContainerValueType();
+  WingAccessModifier getAccessModifier();
 
-  @NotNull
-  List<WingExpression> getExpressionList();
+  @Nullable
+  WingPhaseSpecifier getPhaseSpecifier();
 
 }

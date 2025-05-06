@@ -5,24 +5,18 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface WingInflightMethodDefinition extends WingElement {
+public interface WingClosureExpression extends WingExpression {
 
-  @Nullable
-  WingAccessModifier getAccessModifier();
-
-  @Nullable
+  @NotNull
   WingBlockStatement getBlockStatement();
 
   @Nullable
-  WingExternModifier getExternModifier();
+  WingClosureModifier getClosureModifier();
 
-  @Nullable
+  @NotNull
   WingParameterList getParameterList();
 
   @Nullable
-  WingTypeAnnotation getTypeAnnotation();
-
-  @NotNull
-  PsiElement getIdentifier();
+  WingReturnType getReturnType();
 
 }

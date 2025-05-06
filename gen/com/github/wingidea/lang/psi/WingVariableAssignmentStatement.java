@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface WingVariableAssignmentStatement extends WingElement {
 
   @NotNull
+  WingAssignmentOperator getAssignmentOperator();
+
+  @NotNull
   List<WingExpression> getExpressionList();
 
 }

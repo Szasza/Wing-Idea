@@ -10,7 +10,7 @@ public interface WingNestedIdentifierExpression extends WingExpression {
   @NotNull
   WingAccessor getAccessor();
 
-  @NotNull
+  @Nullable
   WingExpression getExpression();
 
   @Nullable

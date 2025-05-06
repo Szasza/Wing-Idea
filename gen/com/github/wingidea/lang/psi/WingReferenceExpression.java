@@ -7,10 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface WingReferenceExpression extends WingExpression {
 
-  @NotNull
-  List<WingAccessor> getAccessorList();
-
-  @NotNull
-  List<WingArgumentList> getArgumentListList();
+  @Nullable
+  PsiElement getIdentifier();
 
 }

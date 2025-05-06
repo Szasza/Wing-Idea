@@ -34,12 +34,6 @@ public class WingClassImplementationImpl extends WingElementImpl implements Wing
 
   @Override
   @NotNull
-  public List<WingInflightMethodDefinition> getInflightMethodDefinitionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingInflightMethodDefinition.class);
-  }
-
-  @Override
-  @NotNull
   public List<WingInitializer> getInitializerList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, WingInitializer.class);
   }

@@ -32,4 +32,10 @@ public class WingLoopRangeImpl extends WingElementImpl implements WingLoopRange 
     return PsiTreeUtil.getChildrenOfTypeAsList(this, WingExpression.class);
   }
 
+  @Override
+  @Nullable
+  public WingInclusiveRange getInclusiveRange() {
+    return findChildByClass(WingInclusiveRange.class);
+  }
+
 }

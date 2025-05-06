@@ -28,20 +28,14 @@ public class WingMethodDefinitionImpl extends WingElementImpl implements WingMet
 
   @Override
   @Nullable
-  public WingAccessModifier getAccessModifier() {
-    return findChildByClass(WingAccessModifier.class);
-  }
-
-  @Override
-  @Nullable
   public WingBlockStatement getBlockStatement() {
     return findChildByClass(WingBlockStatement.class);
   }
 
   @Override
-  @Nullable
-  public WingExternModifier getExternModifier() {
-    return findChildByClass(WingExternModifier.class);
+  @NotNull
+  public List<WingMethodModifier> getMethodModifierList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingMethodModifier.class);
   }
 
   @Override
@@ -52,8 +46,8 @@ public class WingMethodDefinitionImpl extends WingElementImpl implements WingMet
 
   @Override
   @Nullable
-  public WingTypeAnnotation getTypeAnnotation() {
-    return findChildByClass(WingTypeAnnotation.class);
+  public WingReturnType getReturnType() {
+    return findChildByClass(WingReturnType.class);
   }
 
   @Override

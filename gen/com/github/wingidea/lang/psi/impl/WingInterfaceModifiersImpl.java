@@ -10,15 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.wingidea.lang.psi.WingElementTypes.*;
 import com.github.wingidea.lang.psi.*;
 
-public class WingPreflightClosureExpressionImpl extends WingExpressionImpl implements WingPreflightClosureExpression {
+public class WingInterfaceModifiersImpl extends WingElementImpl implements WingInterfaceModifiers {
 
-  public WingPreflightClosureExpressionImpl(@NotNull ASTNode node) {
+  public WingInterfaceModifiersImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull WingVisitor visitor) {
-    visitor.visitPreflightClosureExpression(this);
+    visitor.visitInterfaceModifiers(this);
   }
 
   @Override
@@ -29,20 +28,14 @@ public class WingPreflightClosureExpressionImpl extends WingExpressionImpl imple
 
   @Override
   @NotNull
-  public WingBlockStatement getBlockStatement() {
-    return findNotNullChildByClass(WingBlockStatement.class);
+  public WingAccessModifier getAccessModifier() {
+    return findNotNullChildByClass(WingAccessModifier.class);
   }
 
   @Override
   @NotNull
-  public WingParameterList getParameterList() {
-    return findNotNullChildByClass(WingParameterList.class);
-  }
-
-  @Override
-  @Nullable
-  public WingTypeAnnotation getTypeAnnotation() {
-    return findChildByClass(WingTypeAnnotation.class);
+  public WingPhaseSpecifier getPhaseSpecifier() {
+    return findNotNullChildByClass(WingPhaseSpecifier.class);
   }
 
 }

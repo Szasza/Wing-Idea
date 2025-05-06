@@ -40,6 +40,12 @@ public class WingIfLetStatementImpl extends WingElementImpl implements WingIfLet
 
   @Override
   @NotNull
+  public List<WingElIfLetBlock> getElIfLetBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingElIfLetBlock.class);
+  }
+
+  @Override
+  @NotNull
   public WingExpression getExpression() {
     return findNotNullChildByClass(WingExpression.class);
   }

@@ -38,6 +38,9 @@ public interface WingBlockStatement extends WingElement {
   List<WingInterfaceDefinitionStatement> getInterfaceDefinitionStatementList();
 
   @NotNull
+  List<WingLiftStatement> getLiftStatementList();
+
+  @NotNull
   List<WingReturnStatement> getReturnStatementList();
 
   @NotNull

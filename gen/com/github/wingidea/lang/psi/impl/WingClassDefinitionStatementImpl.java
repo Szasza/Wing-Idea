@@ -32,4 +32,10 @@ public class WingClassDefinitionStatementImpl extends WingElementImpl implements
     return findNotNullChildByClass(WingClassImplementation.class);
   }
 
+  @Override
+  @NotNull
+  public WingClassModifiers getClassModifiers() {
+    return findNotNullChildByClass(WingClassModifiers.class);
+  }
+
 }

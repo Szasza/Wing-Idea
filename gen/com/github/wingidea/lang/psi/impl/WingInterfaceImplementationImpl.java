@@ -34,14 +34,8 @@ public class WingInterfaceImplementationImpl extends WingElementImpl implements 
 
   @Override
   @NotNull
-  public List<WingInflightMethodSignature> getInflightMethodSignatureList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingInflightMethodSignature.class);
-  }
-
-  @Override
-  @NotNull
-  public List<WingMethodSignature> getMethodSignatureList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingMethodSignature.class);
+  public List<WingMethodDefinition> getMethodDefinitionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingMethodDefinition.class);
   }
 
 }

@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.wingidea.lang.psi.WingElementTypes.*;
 import com.github.wingidea.lang.psi.*;
 
-public class WingMethodSignatureImpl extends WingElementImpl implements WingMethodSignature {
+public class WingLiftStatementImpl extends WingElementImpl implements WingLiftStatement {
 
-  public WingMethodSignatureImpl(@NotNull ASTNode node) {
+  public WingLiftStatementImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull WingVisitor visitor) {
-    visitor.visitMethodSignature(this);
+    visitor.visitLiftStatement(this);
   }
 
   @Override
@@ -27,21 +27,15 @@ public class WingMethodSignatureImpl extends WingElementImpl implements WingMeth
   }
 
   @Override
-  @NotNull
-  public WingParameterList getParameterList() {
-    return findNotNullChildByClass(WingParameterList.class);
+  @Nullable
+  public WingBlockStatement getBlockStatement() {
+    return findChildByClass(WingBlockStatement.class);
   }
 
   @Override
   @NotNull
-  public WingTypeAnnotation getTypeAnnotation() {
-    return findNotNullChildByClass(WingTypeAnnotation.class);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getIdentifier() {
-    return findNotNullChildByType(IDENTIFIER);
+  public List<WingLiftQualification> getLiftQualificationList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingLiftQualification.class);
   }
 
 }

@@ -28,8 +28,8 @@ public class WingJsonMapLiteralImpl extends WingElementImpl implements WingJsonM
 
   @Override
   @NotNull
-  public List<WingJsonMapLiteralMember> getJsonMapLiteralMemberList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingJsonMapLiteralMember.class);
+  public List<WingJsonLiteralMember> getJsonLiteralMemberList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingJsonLiteralMember.class);
   }
 
 }

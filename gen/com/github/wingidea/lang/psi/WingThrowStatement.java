@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface WingThrowStatement extends WingElement {
 
-  @NotNull
+  @Nullable
   WingExpression getExpression();
 
 }

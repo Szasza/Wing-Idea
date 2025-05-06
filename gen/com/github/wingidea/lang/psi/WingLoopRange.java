@@ -10,4 +10,7 @@ public interface WingLoopRange extends WingElement {
   @NotNull
   List<WingExpression> getExpressionList();
 
+  @Nullable
+  WingInclusiveRange getInclusiveRange();
+
 }

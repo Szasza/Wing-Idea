@@ -8,19 +8,16 @@ import com.intellij.psi.PsiElement;
 public interface WingMethodDefinition extends WingElement {
 
   @Nullable
-  WingAccessModifier getAccessModifier();
-
-  @Nullable
   WingBlockStatement getBlockStatement();
 
-  @Nullable
-  WingExternModifier getExternModifier();
+  @NotNull
+  List<WingMethodModifier> getMethodModifierList();
 
   @Nullable
   WingParameterList getParameterList();
 
   @Nullable
-  WingTypeAnnotation getTypeAnnotation();
+  WingReturnType getReturnType();
 
   @NotNull
   PsiElement getIdentifier();

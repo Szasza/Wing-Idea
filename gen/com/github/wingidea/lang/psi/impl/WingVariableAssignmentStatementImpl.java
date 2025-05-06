@@ -28,6 +28,12 @@ public class WingVariableAssignmentStatementImpl extends WingElementImpl impleme
 
   @Override
   @NotNull
+  public WingAssignmentOperator getAssignmentOperator() {
+    return findNotNullChildByClass(WingAssignmentOperator.class);
+  }
+
+  @Override
+  @NotNull
   public List<WingExpression> getExpressionList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, WingExpression.class);
   }

@@ -11,6 +11,9 @@ public interface WingFunctionType extends WingElement {
   WingParameterTypeList getParameterTypeList();
 
   @Nullable
+  WingPhaseSpecifier getPhaseSpecifier();
+
+  @Nullable
   WingType getType();
 
 }

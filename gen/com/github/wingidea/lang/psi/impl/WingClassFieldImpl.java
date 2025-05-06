@@ -28,14 +28,14 @@ public class WingClassFieldImpl extends WingElementImpl implements WingClassFiel
 
   @Override
   @Nullable
-  public WingAccessModifier getAccessModifier() {
-    return findChildByClass(WingAccessModifier.class);
+  public WingExpression getExpression() {
+    return findChildByClass(WingExpression.class);
   }
 
   @Override
   @Nullable
-  public WingExpression getExpression() {
-    return findChildByClass(WingExpression.class);
+  public WingFieldModifiers getFieldModifiers() {
+    return findChildByClass(WingFieldModifiers.class);
   }
 
   @Override

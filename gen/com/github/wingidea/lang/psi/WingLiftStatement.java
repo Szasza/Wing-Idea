@@ -5,15 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface WingInflightClosureExpression extends WingExpression {
-
-  @NotNull
-  WingArgumentList getArgumentList();
-
-  @NotNull
-  WingBlockStatement getBlockStatement();
+public interface WingLiftStatement extends WingElement {
 
   @Nullable
-  WingTypeAnnotation getTypeAnnotation();
+  WingBlockStatement getBlockStatement();
+
+  @NotNull
+  List<WingLiftQualification> getLiftQualificationList();
 
 }

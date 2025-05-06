@@ -10,38 +10,20 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.wingidea.lang.psi.WingElementTypes.*;
 import com.github.wingidea.lang.psi.*;
 
-public class WingJsonMapLiteralMemberImpl extends WingElementImpl implements WingJsonMapLiteralMember {
+public class WingInclusiveRangeImpl extends WingElementImpl implements WingInclusiveRange {
 
-  public WingJsonMapLiteralMemberImpl(@NotNull ASTNode node) {
+  public WingInclusiveRangeImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull WingVisitor visitor) {
-    visitor.visitJsonMapLiteralMember(this);
+    visitor.visitInclusiveRange(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof WingVisitor) accept((WingVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public WingExpression getExpression() {
-    return findChildByClass(WingExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public WingString getString() {
-    return findChildByClass(WingString.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getIdentifier() {
-    return findChildByType(IDENTIFIER);
   }
 
 }

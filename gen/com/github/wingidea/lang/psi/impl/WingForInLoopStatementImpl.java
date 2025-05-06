@@ -27,9 +27,9 @@ public class WingForInLoopStatementImpl extends WingElementImpl implements WingF
   }
 
   @Override
-  @NotNull
+  @Nullable
   public WingBlockStatement getBlockStatement() {
-    return findNotNullChildByClass(WingBlockStatement.class);
+    return findChildByClass(WingBlockStatement.class);
   }
 
   @Override
@@ -45,9 +45,9 @@ public class WingForInLoopStatementImpl extends WingElementImpl implements WingF
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiElement getIdentifier() {
-    return findNotNullChildByType(IDENTIFIER);
+    return findChildByType(IDENTIFIER);
   }
 
 }

@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 public interface WingClassField extends WingElement {
 
   @Nullable
-  WingAccessModifier getAccessModifier();
+  WingExpression getExpression();
 
   @Nullable
-  WingExpression getExpression();
+  WingFieldModifiers getFieldModifiers();
 
   @NotNull
   WingTypeAnnotation getTypeAnnotation();

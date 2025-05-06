@@ -10,15 +10,15 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.wingidea.lang.psi.WingElementTypes.*;
 import com.github.wingidea.lang.psi.*;
 
-public class WingNestedIdentifierJsonExpressionImpl extends WingExpressionImpl implements WingNestedIdentifierJsonExpression {
+public class WingOptionalUnwrapExpressionImpl extends WingExpressionImpl implements WingOptionalUnwrapExpression {
 
-  public WingNestedIdentifierJsonExpressionImpl(@NotNull ASTNode node) {
+  public WingOptionalUnwrapExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull WingVisitor visitor) {
-    visitor.visitNestedIdentifierJsonExpression(this);
+    visitor.visitOptionalUnwrapExpression(this);
   }
 
   @Override
@@ -29,14 +29,8 @@ public class WingNestedIdentifierJsonExpressionImpl extends WingExpressionImpl i
 
   @Override
   @NotNull
-  public WingAccessor getAccessor() {
-    return findNotNullChildByClass(WingAccessor.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getIdentifier() {
-    return findChildByType(IDENTIFIER);
+  public WingExpression getExpression() {
+    return findNotNullChildByClass(WingExpression.class);
   }
 
 }

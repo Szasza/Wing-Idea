@@ -13,7 +13,7 @@ public interface WingEnumDefinitionStatement extends WingElement {
   @NotNull
   List<WingEnumField> getEnumFieldList();
 
-  @NotNull
+  @Nullable
   PsiElement getIdentifier();
 
 }

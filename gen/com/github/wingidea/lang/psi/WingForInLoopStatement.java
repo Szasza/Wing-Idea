@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface WingForInLoopStatement extends WingElement {
 
-  @NotNull
+  @Nullable
   WingBlockStatement getBlockStatement();
 
   @Nullable
@@ -16,7 +16,7 @@ public interface WingForInLoopStatement extends WingElement {
   @Nullable
   WingLoopRange getLoopRange();
 
-  @NotNull
+  @Nullable
   PsiElement getIdentifier();
 
 }

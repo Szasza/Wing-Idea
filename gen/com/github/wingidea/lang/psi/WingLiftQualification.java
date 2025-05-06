@@ -5,15 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface WingMethodSignature extends WingElement {
+public interface WingLiftQualification extends WingElement {
 
   @NotNull
-  WingParameterList getParameterList();
-
-  @NotNull
-  WingTypeAnnotation getTypeAnnotation();
-
-  @NotNull
-  PsiElement getIdentifier();
+  WingExpression getExpression();
 
 }

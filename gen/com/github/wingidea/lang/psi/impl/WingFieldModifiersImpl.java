@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.wingidea.lang.psi.WingElementTypes.*;
 import com.github.wingidea.lang.psi.*;
 
-public class WingInflightMethodDefinitionImpl extends WingElementImpl implements WingInflightMethodDefinition {
+public class WingFieldModifiersImpl extends WingElementImpl implements WingFieldModifiers {
 
-  public WingInflightMethodDefinitionImpl(@NotNull ASTNode node) {
+  public WingFieldModifiersImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull WingVisitor visitor) {
-    visitor.visitInflightMethodDefinition(this);
+    visitor.visitFieldModifiers(this);
   }
 
   @Override
@@ -34,32 +34,8 @@ public class WingInflightMethodDefinitionImpl extends WingElementImpl implements
 
   @Override
   @Nullable
-  public WingBlockStatement getBlockStatement() {
-    return findChildByClass(WingBlockStatement.class);
-  }
-
-  @Override
-  @Nullable
-  public WingExternModifier getExternModifier() {
-    return findChildByClass(WingExternModifier.class);
-  }
-
-  @Override
-  @Nullable
-  public WingParameterList getParameterList() {
-    return findChildByClass(WingParameterList.class);
-  }
-
-  @Override
-  @Nullable
-  public WingTypeAnnotation getTypeAnnotation() {
-    return findChildByClass(WingTypeAnnotation.class);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getIdentifier() {
-    return findNotNullChildByType(IDENTIFIER);
+  public WingPhaseSpecifier getPhaseSpecifier() {
+    return findChildByClass(WingPhaseSpecifier.class);
   }
 
 }

@@ -25,6 +25,7 @@
 
   tokens = [
     INFLIGHT_SPECIFIER = 'inflight'
+    UNPHASED_SPECIFIER = 'unphased'
     STATIC = 'static'
     BOOL = 'regexp:true|false'
     INTEGER = 'regexp:0|[1-9]\d*'
@@ -43,6 +44,8 @@
     OR = '||'
     NOT = '!'
     ASSIGNMENT = '='
+    PLUS_ASSIGNMENT = '+='
+    MINUS_ASSIGNMENT = '-='
     EQUAL = '=='
     NOT_EQUAL = '!='
     LESS_THAN = '<'
@@ -94,10 +97,14 @@
     PROTECTED = 'protected'
     THROW = 'throw'
     INTERNAL = 'internal'
+    LIFT = 'lift'
+    AT_TYPE = '@TYPE'
+    VARIADIC = '...'
     MULTI_LINE_COMMENT = 'regexp:/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/'
-    STRING_LITERAL  = 'regexp:\"([^\\\"\r\n]|\\[^\r\n])*\"?'
+    STRING_LITERAL = 'regexp:\"([^\\\"\r\n]|\\[^\r\n])*\"?'
     IDENTIFIER = 'regexp:[A-Za-z_$][A-Za-z_$0-9]*|[A-Z][A-Z0-9_]*'
     WHITE_SPACE = 'regexp:\s+'
+    INTRINSIC_IDENTIFIER = 'regexp:/@[A-Za-z_$0-9]*/'
   ]
   extends(".*Expression")=Expression
 
@@ -105,170 +112,205 @@
 
 Schema ::= Statement*
 
+ReferenceExpression ::=
+    NestedIdentifierExpression
+    | IDENTIFIER
+    | StructuredAccessExpression
+
+ParenthesizedIdentifier ::=
+    LEFT_PARENTHESIS IDENTIFIER RIGHT_PARENTHESIS
+
+private CustomType ::=
+    IDENTIFIER (DOT IDENTIFIER)*
+
+NestedIdentifierExpression ::=
+    (Expression | JsonContainerType) Accessor IDENTIFIER?
+
+Accessor ::=
+    DOT
+    | '?.'
+
+PhaseSpecifier ::=
+    INFLIGHT_SPECIFIER
+    | UNPHASED_SPECIFIER
+
 private Statement ::=
-    ImportStatementBlock
-    | TestStatement
+    TestStatement
+    | ImportStatementBlock
     | VariableAssignmentStatement
+    | ExpressionStatement
     | VariableDefinitionStatement
     | ReturnStatement
-    | ExpressionStatement
-    | ForInLoopStatement
-    | IfStatement
-    | BreakStatement
-    | ContinueStatement
-    | WhileStatement
     | ClassDefinitionStatement
     | InterfaceDefinitionStatement
+    | ForInLoopStatement
+    | WhileStatement
+    | BreakStatement
+    | ContinueStatement
+    | IfStatement
+    | IfLetStatement
     | StructDefinitionStatement
     | EnumDefinitionStatement
-    | IfLetStatement
     | TryCatchStatement
     | SuperConstructorStatement
     | ThrowStatement
+    | LiftStatement
 
 ImportStatementBlock ::=
     ImportStatement ImportStatement*
 
 ImportStatement ::=
-    BRING IDENTIFIER SEMICOLON
-    | BRING IDENTIFIER ALIAS IDENTIFIER SEMICOLON
-    | BRING STRING_LITERAL ALIAS IDENTIFIER SEMICOLON {pin="BRING"}
+    BRING (IDENTIFIER|STRING_LITERAL)? (ALIAS IDENTIFIER)? SEMICOLON {pin="BRING"}
 
-TestStatement ::=
-    TEST String BlockStatement
+StructDefinitionStatement ::=
+    AccessModifier? STRUCT IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? StructImplementation {pin=2}
 
-BlockStatement ::=
-    LEFT_CURLY_BRACE Statement* RIGHT_CURLY_BRACE
+private StructImplementation ::=
+    LEFT_CURLY_BRACE StructField* RIGHT_CURLY_BRACE
+
+StructField ::=
+    IDENTIFIER TypeAnnotation SEMICOLON {pin=1}
+
+EnumDefinitionStatement ::=
+    AccessModifier? ENUM IDENTIFIER LEFT_CURLY_BRACE (EnumField (COMMA EnumField)* COMMA?)? RIGHT_CURLY_BRACE {pin="ENUM"}
+
+EnumField ::=
+    IDENTIFIER
+
+ReturnStatement ::=
+    RETURN Expression? SEMICOLON {pin="RETURN"}
+
+ThrowStatement ::=
+    THROW Expression? SEMICOLON {pin="THROW"}
+
+LiftStatement ::=
+    LIFT LEFT_CURLY_BRACE LiftQualification (COMMA LiftQualification)* RIGHT_CURLY_BRACE BlockStatement {pin="LIFT"}
+
+LiftQualification ::=
+    Expression COLON (IDENTIFIER | LEFT_SQUARE_BRACE IDENTIFIER (COMMA IDENTIFIER)* RIGHT_SQUARE_BRACE)
+
+AssignmentOperator ::=
+    ASSIGNMENT
+    | PLUS_ASSIGNMENT
+    | MINUS_ASSIGNMENT
+
+VariableAssignmentStatement ::=
+    (ReferenceExpression | StructuredAccessExpression | NestedIdentifierExpression) AssignmentOperator Expression SEMICOLON
 
 ExpressionStatement ::=
     Expression SEMICOLON {pin=1}
+
+VariableDefinitionStatement ::=
+    LET VAR? IDENTIFIER TypeAnnotation? ASSIGNMENT Expression SEMICOLON
+
+TypeAnnotation ::=
+    COLON Type
+
+ClassModifiers ::=
+    AccessModifier PhaseSpecifier
+    | PhaseSpecifier AccessModifier
+
+ClassDefinitionStatement ::=
+    ClassModifiers? CLASS IDENTIFIER (EXTENDS CustomType)? (IMPLEMENTS CustomType (COMMA CustomType)*)? ClassImplementation
+
+ClassImplementation ::=
+    LEFT_CURLY_BRACE (Initializer | ClassField | MethodDefinition)* RIGHT_CURLY_BRACE
+
+FieldModifiers ::=
+    AccessModifier
+    | STATIC
+    | PhaseSpecifier
+    | VAR
+
+ClassField ::=
+    FieldModifiers? IDENTIFIER TypeAnnotation (ASSIGNMENT Expression)? SEMICOLON
+
+// Interfaces
+
+InterfaceModifiers ::=
+    AccessModifier PhaseSpecifier
+    | PhaseSpecifier AccessModifier
+
+InterfaceDefinitionStatement ::=
+    InterfaceModifiers? INTERFACE IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? InterfaceImplementation {pin="INTERFACE"}
+
+InterfaceImplementation ::=
+    LEFT_CURLY_BRACE (MethodDefinition | ClassField )* RIGHT_CURLY_BRACE
+
+InclusiveRange ::=
+    ASSIGNMENT
+
+LoopRange ::=
+    Expression '..' InclusiveRange? Expression
+
+ForInLoopStatement ::=
+    FOR IDENTIFIER IN (Expression | LoopRange) BlockStatement {pin="FOR"}
+
+WhileStatement ::=
+    WHILE Expression BlockStatement
+
+BreakStatement ::=
+    BREAK SEMICOLON
+
+SuperConstructorStatement ::=
+    SUPER ArgumentList SEMICOLON
+
+ContinueStatement ::=
+    CONTINUE SEMICOLON
+
+IfLetStatement ::=
+    IF LET VAR? IDENTIFIER ASSIGNMENT Expression BlockStatement (ElIfLetBlock | ElIfBlock)* (ELSE BlockStatement)?
+
+ElIfLetBlock ::=
+    ELSE IF LET VAR? IDENTIFIER ASSIGNMENT Expression BlockStatement
+
+IfStatement ::=
+    IF Expression BlockStatement ElIfBlock* (ELSE BlockStatement)?
+
+ElIfBlock ::=
+    ELSE IF Expression BlockStatement
+
+TryCatchStatement ::=
+    TRY BlockStatement CatchBlock? FinallyBlock?
+
+CatchBlock ::=
+    CATCH (IDENTIFIER | ParenthesizedIdentifier)? BlockStatement
+
+FinallyBlock ::=
+    FINALLY BlockStatement
+
+BlockStatement ::=
+    LEFT_CURLY_BRACE Statement* RIGHT_CURLY_BRACE
 
 Expression ::=
     BinaryExpression
     | UnaryExpression
     | NewExpression
-    | StructLiteralExpression
-    | JsonLiteralExpression
     | LiteralExpression
     | ReferenceExpression
-    | NestedIdentifierExpression
-    | NestedIdentifierJsonExpression
     | CallExpression
-    | StructuredAccessExpression
-    | SuperCallExpression
-    | PreflightClosureExpression
-    | InflightClosureExpression
+    | ClosureExpression
     | AwaitExpression
     | DeferExpression
     | CollectionLiteralExpression
     | ParenthesizedExpression
-    | OptionalTestExpression
+    | JsonLiteralExpression
+    | StructLiteralExpression
+    | OptionalUnwrapExpression
+    | IntrinsicExpression
+    | TypeIntrinsicExpression
 
-MathematicalOperators ::=
-    ADDITION
-    | SUBTRACTION
-    | MULTIPLY
-    | DIVIDE
-    | MODULO
-    | FLOOR_DIVIDE
-    | POWER
+IntrinsicExpression ::=
+    INTRINSIC_IDENTIFIER ArgumentList?
 
-LogicalOperators ::=
-    AND
-    | OR
-    | NOT
-
-RelationalOperators ::=
-    EQUAL
-    | NOT_EQUAL
-    | LESS_THAN
-    | LESS_THAN_OR_EQUAL
-    | GREATER_THAN
-    | GREATER_THAN_OR_EQUAL
-
-Operators ::=
-    MathematicalOperators
-    | LogicalOperators
-    | RelationalOperators
-    | UNWRAP_OR
-
-BinaryExpression ::=
-    Expression Operators Expression
-
-
-UnaryOperators ::=
-    NOT
-    | SUBTRACTION
-
-UnaryExpression ::=
-    UnaryOperators Expression
-
-
-VariableDefinitionStatement ::=
-    LET VAR? IDENTIFIER TypeAnnotation? ASSIGNMENT Expression SEMICOLON
-
-Type ::=
-    OptionalType
-    | FieldType
-
-private FieldType ::=
-    BuiltInType
-    | BuiltInContainerType
-    | FunctionType
-    | CustomType
-    | JsonContainerType
-
-
-private BuiltInType ::=
-    "bool"
-    | "num"
-    | "any"
-    | "str"
-    | "void"
-    | "duration"
-
-private OptionalType ::=
-    FieldType QUESTION_MARK
-
-private CustomType ::=
-    IDENTIFIER (DOT IDENTIFIER)*
-
-private JsonContainerType ::=
-    "Json"
-    | "MutJson"
-
-private BuiltInContainerType ::=
-    ImmutableContainerType
-    | MutableContainerType
-
-private ImmutableContainerType ::=
-    "Array" ContainerValueType
-    | "Set" ContainerValueType
-    | "Map" ContainerValueType
-    | "Promise" ContainerValueType
-
-private MutableContainerType ::=
-    "MutSet" ContainerValueType
-    | "MutMap" ContainerValueType
-    | "MutArray" ContainerValueType
-
-ContainerValueType ::=
-    "<" Type ">"
-
-TypeAnnotation ::=
-    COLON Type
-
-FunctionType ::=
-    INFLIGHT_SPECIFIER? ParameterTypeList [COLON Type]
-
-ParameterTypeList ::=
-    LEFT_PARENTHESIS [Type (COMMA Type)* COMMA?] RIGHT_PARENTHESIS
+TypeIntrinsicExpression ::=
+    AT_TYPE LEFT_PARENTHESIS Type RIGHT_PARENTHESIS
 
 LiteralExpression ::=
     String
+    | Number
     | BOOL
     | Duration
-    | Number
     | NIL
 
 Number ::=
@@ -284,160 +326,148 @@ Duration ::=
     | Number "mo"
     | Number "y"
 
-ForInLoopStatement ::=
-    FOR IDENTIFIER IN Expression BlockStatement
-    | FOR IDENTIFIER IN LoopRange BlockStatement
+CallExpression ::=
+    (Expression | SuperCallExpression) ArgumentList
 
-LoopRange ::=
-    Expression '..' '='? Expression
+SuperCallExpression ::=
+    'super' DOT IDENTIFIER
 
-IfStatement ::=
-    IF Expression BlockStatement ElIfBlock* (ELSE BlockStatement)?
+ArgumentList ::=
+    LEFT_PARENTHESIS (Argument (COMMA Argument)* COMMA?)? RIGHT_PARENTHESIS
 
-ElIfBlock ::=
-    (ELIF | ELSE IF) (Expression BlockStatement | LET IDENTIFIER ASSIGNMENT Expression BlockStatement)
+Argument ::=
+    (IDENTIFIER COLON)? Expression
 
-BreakStatement ::=
-    BREAK SEMICOLON
+NewExpression ::=
+    NEW (CustomType | MutableContainerType) ArgumentList (ALIAS Expression)? (IN Expression)?
 
-ContinueStatement ::=
-    CONTINUE SEMICOLON
+Type ::=
+    OptionalType
+    | FieldType
 
-WhileStatement ::=
-    WHILE Expression BlockStatement
+FieldType ::=
+    CustomType
+    | BuiltInType
+    | BuiltInContainerType
+    | JsonContainerType
+    | FunctionType
+    | ParenthesizedType
 
-ClassDefinitionStatement ::=
-    PUBLIC? INFLIGHT_SPECIFIER? CLASS IDENTIFIER (EXTENDS CustomType)? (IMPLEMENTS CustomType (COMMA CustomType)*)? ClassImplementation
+ParenthesizedType ::=
+    LEFT_PARENTHESIS Type RIGHT_PARENTHESIS
 
-ClassImplementation ::=
-    LEFT_CURLY_BRACE (Initializer | ClassField | MethodDefinition | InflightMethodDefinition)* RIGHT_CURLY_BRACE
+private OptionalType ::=
+    FieldType QUESTION_MARK
+
+FunctionType ::=
+    PhaseSpecifier? ParameterTypeList [COLON Type]
+
+ParameterTypeList ::=
+    LEFT_PARENTHESIS [Type (COMMA Type)* COMMA?] RIGHT_PARENTHESIS
+
+private BuiltInType ::=
+    "num"
+    | "bool"
+    | "any"
+    | "str"
+    | "void"
+    | "duration"
+    | "datetime"
+    | "regex"
+    | "bytes"
 
 Initializer ::=
-    INFLIGHT_SPECIFIER? NEW ParameterList BlockStatement
-    | INFLIGHT_SPECIFIER? NEW Expression {pin="NEW"}
-
-ParameterList ::=
-    LEFT_PARENTHESIS [ParameterDefinition (COMMA ParameterDefinition)* COMMA?] RIGHT_PARENTHESIS
-
-ParameterDefinition ::=
-    VAR? IDENTIFIER TypeAnnotation
-
-MethodDefinition ::=
-    AccessModifier? ExternModifier? STATIC? 'async'? IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON) {pin="IDENTIFIER"}
-
-InflightMethodDefinition ::=
-    AccessModifier? ExternModifier? (INFLIGHT_SPECIFIER STATIC? | STATIC? INFLIGHT_SPECIFIER) IDENTIFIER ParameterList TypeAnnotation? (BlockStatement | SEMICOLON)  {pin="IDENTIFIER"}
+    PhaseSpecifier? NEW ParameterList BlockStatement {pin="NEW"}
 
 ExternModifier ::=
     EXTERN String
 
-ClassField ::=
-    AccessModifier? 'static'? INFLIGHT_SPECIFIER? VAR? IDENTIFIER TypeAnnotation (ASSIGNMENT Expression)? SEMICOLON
+ReturnType ::=
+    TypeAnnotation
+
+MethodModifier ::=
+    ExternModifier
+    | AccessModifier
+    | STATIC
+    | PhaseSpecifier
+
+MethodDefinition ::=
+    MethodModifier* IDENTIFIER ParameterList ReturnType? (BlockStatement | SEMICOLON) {pin="IDENTIFIER"}
 
 AccessModifier ::=
     PUBLIC
     | PROTECTED
     | INTERNAL
 
-VariableAssignmentStatement ::=
-    (ReferenceExpression | StructuredAccessExpression | NestedIdentifierExpression | NestedIdentifierJsonExpression) ASSIGNMENT Expression SEMICOLON
+ParameterDefinition ::=
+    VAR? VARIADIC? IDENTIFIER TypeAnnotation?
 
-ReferenceExpression ::=
-    IDENTIFIER ArgumentList? (Accessor IDENTIFIER ArgumentList?)*
+ParameterList ::=
+    LEFT_PARENTHESIS [ParameterDefinition (COMMA ParameterDefinition)* COMMA?] RIGHT_PARENTHESIS
 
-NestedIdentifierExpression ::=
-    Expression Accessor IDENTIFIER?
+private ImmutableContainerType ::=
+    "Array" ContainerValueType
+    | "Set" ContainerValueType
+    | "Map" ContainerValueType
+    | "Promise" ContainerValueType
 
-NestedIdentifierJsonExpression ::=
-    JsonContainerType Accessor IDENTIFIER?
+private MutableContainerType ::=
+    "MutSet" ContainerValueType
+    | "MutMap" ContainerValueType
+    | "MutArray" ContainerValueType
 
-StructuredAccessExpression ::=
-    Expression LEFT_SQUARE_BRACE Expression RIGHT_SQUARE_BRACE
+private BuiltInContainerType ::=
+    ImmutableContainerType
+    | MutableContainerType
 
-Accessor ::=
-    DOT
-    | '?.'
+ContainerValueType ::=
+    LESS_THAN Type GREATER_THAN
 
-ReturnStatement ::=
-    RETURN Expression SEMICOLON
+OptionalUnwrapExpression ::=
+    Expression NOT
 
-InterfaceDefinitionStatement ::=
-    AccessModifier? INFLIGHT_SPECIFIER? INTERFACE IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? InterfaceImplementation {pin=3}
+UnaryOperators ::=
+    NOT
+    | SUBTRACTION
 
-InterfaceImplementation ::=
-    LEFT_CURLY_BRACE (MethodSignature | InflightMethodSignature | ClassField )* RIGHT_CURLY_BRACE {pin=1}
+UnaryExpression ::=
+    UnaryOperators Expression
 
-MethodSignature ::=
-    ASYNC? IDENTIFIER ParameterList TypeAnnotation SEMICOLON
+MathematicalOperators ::=
+    ADDITION
+    | SUBTRACTION
+    | MULTIPLY
+    | DIVIDE
+    | MODULO
+    | FLOOR_DIVIDE
+    | POWER
 
-InflightMethodSignature ::=
-    INFLIGHT_SPECIFIER IDENTIFIER ParameterList TypeAnnotation SEMICOLON {pin=2}
+LogicalOperators ::=
+    OR
+    | AND
 
-StructDefinitionStatement ::=
-    AccessModifier? STRUCT IDENTIFIER (EXTENDS CustomType (COMMA CustomType)*)? StructImplementation {pin=2}
+RelationalOperators ::=
+    EQUAL
+    | NOT_EQUAL
+    | GREATER_THAN
+    | GREATER_THAN_OR_EQUAL
+    | LESS_THAN_OR_EQUAL
+    | LESS_THAN
 
-private StructImplementation ::=
-    LEFT_CURLY_BRACE StructField* RIGHT_CURLY_BRACE {pin=1}
+Operators ::=
+    MathematicalOperators
+    | LogicalOperators
+    | RelationalOperators
+    | UNWRAP_OR
 
-StructField ::=
-    IDENTIFIER TypeAnnotation SEMICOLON {pin=1}
+BinaryExpression ::=
+    Expression Operators Expression
 
-StructLiteralExpression ::=
-    CustomType LEFT_CURLY_BRACE StructLiteralMember* (COMMA StructLiteralMember)* COMMA? RIGHT_CURLY_BRACE
+ClosureModifier ::=
+    PhaseSpecifier
 
-StructLiteralMember ::=
-    IDENTIFIER COLON Expression
-
-PreflightClosureExpression ::=
-    ParameterList TypeAnnotation? ARROW BlockStatement
-
-InflightClosureExpression ::=
-    INFLIGHT_SPECIFIER ArgumentList TypeAnnotation? ARROW BlockStatement
-
-CallExpression ::=
-    Expression ArgumentList
-
-SuperCallExpression ::=
-    'super' DOT IDENTIFIER ArgumentList
-
-ArgumentList ::=
-    LEFT_PARENTHESIS (Argument (COMMA Argument)* COMMA?)? RIGHT_PARENTHESIS
-
-Argument ::=
-    IDENTIFIER COLON Expression
-    | ReferenceExpression
-    | Expression
-
-CollectionLiteralExpression ::=
-    ArrayLiteralExpression
-    | SetLiteralExpression
-    | MapLiteralExpression
-
-ArrayLiteralExpression ::=
-    BuiltInContainerType? LEFT_SQUARE_BRACE (Expression (COMMA Expression)* COMMA?)? RIGHT_SQUARE_BRACE
-
-SetLiteralExpression ::=
-    BuiltInContainerType? LEFT_CURLY_BRACE (Expression (COMMA Expression)* COMMA?)? RIGHT_CURLY_BRACE
-
-MapLiteralExpression ::=
-    BuiltInContainerType? LEFT_CURLY_BRACE MapLiteralMember (COMMA MapLiteralMember)* COMMA? RIGHT_CURLY_BRACE
-
-MapLiteralMember ::=
-    Expression ARROW Expression
-
-NewExpression ::=
-    NEW (CustomType | MutableContainerType) ArgumentList (ALIAS Expression)? (IN Expression)?
-
-JsonLiteralExpression ::=
-    JsonContainerType Expression
-    | JsonMapLiteral
-
-JsonMapLiteral ::=
-    LEFT_CURLY_BRACE (JsonMapLiteralMember (COMMA JsonMapLiteralMember)* COMMA?)? RIGHT_CURLY_BRACE
-
-JsonMapLiteralMember ::=
-    (String | IDENTIFIER) COLON Expression
-    | IDENTIFIER
+ClosureExpression ::=
+    ClosureModifier? ParameterList ReturnType? ARROW BlockStatement
 
 AwaitExpression ::=
     AWAIT Expression
@@ -448,35 +478,55 @@ DeferExpression ::=
 ParenthesizedExpression ::=
     LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS
 
-OptionalTestExpression ::=
-    Expression QUESTION_MARK
+CollectionLiteralExpression ::=
+    ArrayLiteralExpression
+    | MapLiteralExpression
 
-EnumDefinitionStatement ::=
-    AccessModifier? ENUM IDENTIFIER LEFT_CURLY_BRACE (EnumField (COMMA EnumField)* COMMA?)? RIGHT_CURLY_BRACE
+ArrayLiteralExpression ::=
+    BuiltInContainerType? LEFT_SQUARE_BRACE (Expression (COMMA Expression)* COMMA?)? RIGHT_SQUARE_BRACE
 
-EnumField ::=
+MapLiteralExpression ::=
+    BuiltInContainerType? LEFT_CURLY_BRACE MapLiteralMember (COMMA MapLiteralMember)* COMMA? RIGHT_CURLY_BRACE
+
+StructLiteralExpression ::=
+    CustomType LEFT_CURLY_BRACE StructLiteralMember* (COMMA StructLiteralMember)* COMMA? RIGHT_CURLY_BRACE
+
+MapLiteralMember ::=
+    Expression ARROW Expression
+
+StructLiteralMember ::=
     IDENTIFIER
+    | IDENTIFIER COLON Expression
 
-IfLetStatement ::=
-    IF LET IDENTIFIER ASSIGNMENT Expression BlockStatement ElIfBlock* (ELSE BlockStatement)?
+StructuredAccessExpression ::=
+    Expression LEFT_SQUARE_BRACE Expression RIGHT_SQUARE_BRACE
 
-TryCatchStatement ::=
-    TRY BlockStatement CatchBlock? FinallyBlock?
+JsonLiteralExpression ::=
+    JsonContainerType Expression
+    | JsonMapLiteral
 
-CatchBlock ::=
-    CATCH IDENTIFIER? BlockStatement
+JsonMapLiteral ::=
+    LEFT_CURLY_BRACE (JsonLiteralMember (COMMA JsonLiteralMember)* COMMA?)? RIGHT_CURLY_BRACE
 
-FinallyBlock ::=
-    FINALLY BlockStatement
+JsonLiteralMember ::=
+    (String | IDENTIFIER) COLON Expression
+    | IDENTIFIER
 
-SuperConstructorStatement ::=
-    SUPER ArgumentList SEMICOLON
+private JsonContainerType ::=
+    "Json"
+    | "MutJson"
 
-ThrowStatement ::=
-    THROW Expression SEMICOLON
+TestStatement ::=
+    TEST String BlockStatement
 
 // TODO: Missing support for template substitution
 /*
+    non_interpolated_string: ($) =>
+      seq(
+        '#"',
+        repeat(choice($._non_interpolated_string_fragment, $._escape_sequence)),
+        '"'
+      ),
     string: ($) =>
       seq(
         '"',
@@ -489,19 +539,21 @@ ThrowStatement ::=
         ),
         '"'
       ),
-    template_substitution: ($) => seq("${", $.expression, "}"),
-    _string_fragment: ($) => token.immediate(prec(1, /[^$"\\]+/)),
+    template_substitution: ($) => seq("{", $.expression, "}"),
+    _string_fragment: ($) => token.immediate(prec(1, /[^{"\\]+/)),
+    _non_interpolated_string_fragment: ($) =>
+        token.immediate(prec(1, /[^"\\]+/)),
     _escape_sequence: ($) =>
       token.immediate(
         seq(
           "\\",
           choice(
-            "$",
+            "{",
             /[^xu0-7]/,
             /[0-7]{1,3}/,
             /x[0-9a-fA-F]{2}/,
             /u[0-9a-fA-F]{4}/,
-            /u{[0-9a-fA-F]+}/
+            /u\{[0-9a-fA-F]+\}/
           )
         )
       ),

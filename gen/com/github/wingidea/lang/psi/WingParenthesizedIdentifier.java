@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface WingOptionalTestExpression extends WingExpression {
+public interface WingParenthesizedIdentifier extends WingElement {
 
   @NotNull
-  WingExpression getExpression();
+  PsiElement getIdentifier();
 
 }

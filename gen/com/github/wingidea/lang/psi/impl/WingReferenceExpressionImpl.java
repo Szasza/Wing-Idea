@@ -28,15 +28,9 @@ public class WingReferenceExpressionImpl extends WingExpressionImpl implements W
   }
 
   @Override
-  @NotNull
-  public List<WingAccessor> getAccessorList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingAccessor.class);
-  }
-
-  @Override
-  @NotNull
-  public List<WingArgumentList> getArgumentListList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, WingArgumentList.class);
+  @Nullable
+  public PsiElement getIdentifier() {
+    return findChildByType(IDENTIFIER);
   }
 
 }
