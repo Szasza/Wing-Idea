@@ -1,6 +1,6 @@
 package com.github.wingidea.ide.folding
 
-import com.github.wingidea.lang.psi.WingImportStatementBlock
+import com.github.wingidea.lang.psi.WingImportStatement
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -13,7 +13,7 @@ class WingImportFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         val blocks = PsiTreeUtil.findChildrenOfAnyType(
             root,
-            WingImportStatementBlock::class.java,
+            WingImportStatement::class.java,
         )
         return blocks.map { FoldingDescriptor(it, it.textRange) }.toTypedArray()
     }

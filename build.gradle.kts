@@ -26,7 +26,7 @@ version = wingPluginVersion
 
 // Set the JVM language level used to build the project.
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 // Configure project's dependencies
@@ -52,7 +52,7 @@ dependencies {
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
-        create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"), useInstaller = false)
+        intellijIdeaUltimate(providers.gradleProperty("platformVersion"), useInstaller = false)
 
         // Plugin Dependencies. Uses `platformBundledPlugins` property from the gradle.properties file for bundled IntelliJ Platform plugins.
         bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
@@ -142,12 +142,12 @@ intellijPlatform {
 
     pluginVerification {
         ides {
-            ide(IntelliJPlatformType.IntellijIdeaUltimate, "2024.1")
+            ide(IntelliJPlatformType.IntellijIdeaUltimate, "2024.2")
             recommended()
             select {
                 types = listOf(IntelliJPlatformType.IntellijIdeaUltimate)
-                sinceBuild = "241"
-                untilBuild = "251.*"
+                sinceBuild = "242"
+                untilBuild = "252.*"
             }
         }
     }
