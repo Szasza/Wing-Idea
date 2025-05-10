@@ -1,0 +1,22 @@
+// This is a generated file. Not intended for manual editing.
+package com.github.wingidea.lang.psi;
+
+import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
+
+public interface WingElIfLetBlock extends WingElement {
+
+  @NotNull
+  WingBlock getBlock();
+
+  @NotNull
+  WingExpression getExpression();
+
+  @Nullable
+  WingReassignable getReassignable();
+
+  @NotNull
+  PsiElement getIdentifier();
+
+}
